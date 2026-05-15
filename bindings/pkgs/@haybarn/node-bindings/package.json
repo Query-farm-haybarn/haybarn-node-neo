@@ -20,5 +20,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Query-farm-haybarn/haybarn-node-neo.git"
-  }
+  },
+  "description": "Low-level Node bindings to the DuckDB C API, linked against Haybarn (libhaybarn)."
 }

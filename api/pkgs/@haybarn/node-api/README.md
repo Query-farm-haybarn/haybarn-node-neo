@@ -1,10 +1,24 @@
-# DuckDB Node API
+# Haybarn Node API
 
-An API for using [DuckDB](https://duckdb.org/) in [Node](https://nodejs.org/).
+A high-level Node API for [Haybarn](https://github.com/Query-farm-haybarn/haybarn),
+a derived distribution of [DuckDB](https://duckdb.org/) (powered by DuckDB),
+published by Query Farm LLC.
 
-This is a high-level API meant for applications.
-It depends on low-level bindings that adhere closely to [DuckDB's C API](https://duckdb.org/docs/api/c/overview),
-available separately as [@haybarn/node-bindings](https://www.npmjs.com/package/@haybarn/node-bindings).
+It depends on low-level bindings that adhere closely to
+[DuckDB's C API](https://duckdb.org/docs/api/c/overview), available separately
+as [@haybarn/node-bindings](https://www.npmjs.com/package/@haybarn/node-bindings).
+
+Forked from [@duckdb/node-api](https://www.npmjs.com/package/@duckdb/node-api);
+the API surface (class names, methods, return shapes) is unchanged, so the only
+migration step is swapping the import:
+
+```ts
+- import { DuckDBInstance } from '@duckdb/node-api';
++ import { DuckDBInstance } from '@haybarn/node-api';
+```
+
+Haybarn is independent of and not endorsed by the DuckDB Foundation. DuckDB is
+a trademark of the DuckDB Foundation.
 
 ## Features
 

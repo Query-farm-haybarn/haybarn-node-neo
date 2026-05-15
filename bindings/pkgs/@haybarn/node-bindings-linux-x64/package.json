@@ -14,5 +14,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Query-farm-haybarn/haybarn-node-neo.git"
-  }
+  },
+  "description": "Haybarn Node bindings native addon — linux-x64."
 }

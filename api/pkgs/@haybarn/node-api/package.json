@@ -10,5 +10,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Query-farm-haybarn/haybarn-node-neo.git"
-  }
+  },
+  "description": "High-level Node API for Haybarn — a derived distribution of DuckDB, powered by DuckDB."
 }
