@@ -20,26 +20,26 @@ const getNativeNodeBinding = (runtimePlatformArch) => {
     switch(runtimePlatformArch) {
         case `linux-x64`:
             return isLinuxMusl()
-                ? require('@haybarn/node-bindings-linux-x64-musl/duckdb.node')
-                : require('@haybarn/node-bindings-linux-x64/duckdb.node');
+                ? require('@haybarn/node-bindings-linux-x64-musl/haybarn.node')
+                : require('@haybarn/node-bindings-linux-x64/haybarn.node');
         case 'linux-arm64':
             return isLinuxMusl()
-                ? require('@haybarn/node-bindings-linux-arm64-musl/duckdb.node')
-                : require('@haybarn/node-bindings-linux-arm64/duckdb.node');
+                ? require('@haybarn/node-bindings-linux-arm64-musl/haybarn.node')
+                : require('@haybarn/node-bindings-linux-arm64/haybarn.node');
         case 'darwin-arm64':
-            return require('@haybarn/node-bindings-darwin-arm64/duckdb.node');
+            return require('@haybarn/node-bindings-darwin-arm64/haybarn.node');
         case 'darwin-x64':
-            return require('@haybarn/node-bindings-darwin-x64/duckdb.node');
+            return require('@haybarn/node-bindings-darwin-x64/haybarn.node');
         case 'win32-arm64':
-            return require('@haybarn/node-bindings-win32-arm64/duckdb.node');
+            return require('@haybarn/node-bindings-win32-arm64/haybarn.node');
         case 'win32-x64':
-            return require('@haybarn/node-bindings-win32-x64/duckdb.node');
+            return require('@haybarn/node-bindings-win32-x64/haybarn.node');
         default:
             const [platform, arch] = runtimePlatformArch.split('-');
             try {
-                return require(`@haybarn/node-bindings-${platform}-${arch}/duckdb.node`);
+                return require(`@haybarn/node-bindings-${platform}-${arch}/haybarn.node`);
             } catch (err) {
-                throw new Error(`Error loading duckdb native binding: unsupported arch '${arch}' for platform '${platform}'`);
+                throw new Error(`Error loading haybarn native binding: unsupported arch '${arch}' for platform '${platform}'`);
             }            
     }
 }

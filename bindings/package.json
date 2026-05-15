@@ -4,9 +4,9 @@
     "build": "pnpm run build:package && pnpm run build:test",
     "build:package": "cross-replace node-gyp configure --verbose --nodedir=$NODE_DIR && node-gyp build --verbose --nodedir=$NODE_DIR",
     "build:test": "tsc -b test",
-    "clean": "pnpm run clean:gyp && pnpm run clean:libduckdb && pnpm run clean:package",
+    "clean": "pnpm run clean:gyp && pnpm run clean:libhaybarn && pnpm run clean:package",
     "clean:gyp": "node-gyp clean",
-    "clean:libduckdb": "rimraf libduckdb",
+    "clean:libhaybarn": "rimraf libhaybarn",
     "clean:package": "rimraf pkgs/@haybarn/**/*.node pkgs/@haybarn/**/*.so pkgs/@haybarn/**/*.dylib pkgs/@haybarn/**/*.dll",
     "test": "vitest run",
     "test:watch": "vitest"

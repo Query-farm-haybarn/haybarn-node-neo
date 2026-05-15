@@ -46,7 +46,7 @@ function checkFunctionSignatures() {
       return;
     }
 
-    const headerFilePath = path.join('libduckdb', 'duckdb.h');
+    const headerFilePath = path.join('libhaybarn', 'duckdb.h');
     const typeDefsFilePath = path.join('pkgs', '@duckdb', 'node-bindings', 'duckdb.d.ts');
     const bindingsFilePath = path.join('src', 'duckdb_node_bindings.cpp');
 

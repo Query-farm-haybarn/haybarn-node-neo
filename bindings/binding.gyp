@@ -27,65 +27,65 @@
   },
   'targets': [
     {
-      'target_name': 'fetch_libduckdb',
+      'target_name': 'fetch_libhaybarn',
       'type': 'none',
       'conditions': [
         ['OS=="linux" and target_arch=="x64"', {
           'variables': {
-            'script_path': '<(module_root_dir)/scripts/fetch_libduckdb_linux_amd64<(libc_script_suffix).py',
+            'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_linux_amd64<(libc_script_suffix).py',
           },
         }],
         ['OS=="linux" and target_arch=="arm64"', {
           'variables': {
-            'script_path': '<(module_root_dir)/scripts/fetch_libduckdb_linux_arm64<(libc_script_suffix).py',
+            'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_linux_arm64<(libc_script_suffix).py',
           },
         }],
         ['OS=="mac"', {
           'variables': {
-            'script_path': '<(module_root_dir)/scripts/fetch_libduckdb_osx_universal.py',
+            'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_osx_universal.py',
           },
         }],
         ['OS=="win" and target_arch=="arm64"', {
           'variables': {
-            'script_path': '<(module_root_dir)/scripts/fetch_libduckdb_windows_arm64.py',
+            'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_windows_arm64.py',
           },
         }],
         ['OS=="win" and target_arch=="x64"', {
           'variables': {
-            'script_path': '<(module_root_dir)/scripts/fetch_libduckdb_windows_amd64.py',
+            'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_windows_amd64.py',
           },
         }],
       ],
       'actions': [
         {
-          'action_name': 'run_fetch_libduckdb_script',
-          'message': 'Fetching and extracting libduckdb',
+          'action_name': 'run_fetch_libhaybarn_script',
+          'message': 'Fetching and extracting libhaybarn',
           'inputs': [],
           'action': ['python3', '<(script_path)'],
-          'outputs': ['<(module_root_dir)/libduckdb'],
+          'outputs': ['<(module_root_dir)/libhaybarn'],
         },
       ],
     },
     {
-      'target_name': 'duckdb',
+      'target_name': 'haybarn',
       'dependencies': [
-        'fetch_libduckdb',
+        'fetch_libhaybarn',
         '<!(node -p "require(\'node-addon-api\').targets"):node_addon_api_except_all',
       ],
       'sources': ['src/duckdb_node_bindings.cpp'],
-      'include_dirs': ['<(module_root_dir)/libduckdb'],
+      'include_dirs': ['<(module_root_dir)/libhaybarn'],
       'conditions': [
         ['OS=="linux" and target_arch=="x64"', {
           'link_settings': {
             'libraries': [
-              '-lduckdb',
-              '-L<(module_root_dir)/libduckdb',
+              '-lhaybarn',
+              '-L<(module_root_dir)/libhaybarn',
               '-Wl,-rpath,\'$$ORIGIN\'',
             ],
           },
           'copies': [
             {
-              'files': ['<(module_root_dir)/libduckdb/libduckdb.so'],
+              'files': ['<(module_root_dir)/libhaybarn/libhaybarn.so'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-linux-x64<(libc_pkg_suffix)',
             },
           ],
@@ -93,14 +93,14 @@
         ['OS=="linux" and target_arch=="arm64"', {
           'link_settings': {
             'libraries': [
-              '-lduckdb',
-              '-L<(module_root_dir)/libduckdb',
+              '-lhaybarn',
+              '-L<(module_root_dir)/libhaybarn',
               '-Wl,-rpath,\'$$ORIGIN\'',
             ],
           },
           'copies': [
             {
-              'files': ['<(module_root_dir)/libduckdb/libduckdb.so'],
+              'files': ['<(module_root_dir)/libhaybarn/libhaybarn.so'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-linux-arm64<(libc_pkg_suffix)',
             },
           ],
@@ -112,14 +112,14 @@
           },
           'link_settings': {
             'libraries': [
-              '-lduckdb',
-              '-L<(module_root_dir)/libduckdb',
+              '-lhaybarn',
+              '-L<(module_root_dir)/libhaybarn',
               '-Wl,-rpath,@loader_path',
             ],
           },
           'copies': [
             {
-              'files': ['<(module_root_dir)/libduckdb/libduckdb.dylib'],
+              'files': ['<(module_root_dir)/libhaybarn/libhaybarn.dylib'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-arm64',
             },
           ],
@@ -131,14 +131,14 @@
           },
           'link_settings': {
             'libraries': [
-              '-lduckdb',
-              '-L<(module_root_dir)/libduckdb',
+              '-lhaybarn',
+              '-L<(module_root_dir)/libhaybarn',
               '-Wl,-rpath,@loader_path',
             ],
           },
           'copies': [
             {
-              'files': ['<(module_root_dir)/libduckdb/libduckdb.dylib'],
+              'files': ['<(module_root_dir)/libhaybarn/libhaybarn.dylib'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-x64',
             },
           ],
@@ -146,12 +146,12 @@
         ['OS=="win" and target_arch=="arm64"', {
           'link_settings': {
             'libraries': [
-              '<(module_root_dir)/libduckdb/duckdb.lib',
+              '<(module_root_dir)/libhaybarn/haybarn.lib',
             ],
           },
           'copies': [
             {
-              'files': ['<(module_root_dir)/libduckdb/duckdb.dll'],
+              'files': ['<(module_root_dir)/libhaybarn/haybarn.dll'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-arm64',
             },
           ],
@@ -159,12 +159,12 @@
         ['OS=="win" and target_arch=="x64"', {
           'link_settings': {
             'libraries': [
-              '<(module_root_dir)/libduckdb/duckdb.lib',
+              '<(module_root_dir)/libhaybarn/haybarn.lib',
             ],
           },
           'copies': [
             {
-              'files': ['<(module_root_dir)/libduckdb/duckdb.dll'],
+              'files': ['<(module_root_dir)/libhaybarn/haybarn.dll'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-x64',
             },
           ],
@@ -172,14 +172,14 @@
       ],
     },
     {
-      'target_name': 'copy_duckdb_node',
+      'target_name': 'copy_haybarn_node',
       'type': 'none',
-      'dependencies': ['duckdb'],
+      'dependencies': ['haybarn'],
       'conditions': [
         ['OS=="linux" and target_arch=="x64"', {
           'copies': [
             {
-              'files': ['<(module_root_dir)/build/Release/duckdb.node'],
+              'files': ['<(module_root_dir)/build/Release/haybarn.node'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-linux-x64<(libc_pkg_suffix)',
             },
           ],
@@ -187,7 +187,7 @@
         ['OS=="linux" and target_arch=="arm64"', {
           'copies': [
             {
-              'files': ['<(module_root_dir)/build/Release/duckdb.node'],
+              'files': ['<(module_root_dir)/build/Release/haybarn.node'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-linux-arm64<(libc_pkg_suffix)',
             },
           ],
@@ -195,7 +195,7 @@
         ['OS=="mac" and target_arch=="arm64"', {
           'copies': [
             {
-              'files': ['<(module_root_dir)/build/Release/duckdb.node'],
+              'files': ['<(module_root_dir)/build/Release/haybarn.node'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-arm64',
             },
           ],
@@ -203,7 +203,7 @@
         ['OS=="mac" and target_arch=="x64"', {
           'copies': [
             {
-              'files': ['<(module_root_dir)/build/Release/duckdb.node'],
+              'files': ['<(module_root_dir)/build/Release/haybarn.node'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-x64',
             },
           ],
@@ -211,7 +211,7 @@
         ['OS=="win" and target_arch=="arm64"', {
           'copies': [
             {
-              'files': ['<(module_root_dir)/build/Release/duckdb.node'],
+              'files': ['<(module_root_dir)/build/Release/haybarn.node'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-arm64',
             },
           ],
@@ -219,7 +219,7 @@
         ['OS=="win" and target_arch=="x64"', {
           'copies': [
             {
-              'files': ['<(module_root_dir)/build/Release/duckdb.node'],
+              'files': ['<(module_root_dir)/build/Release/haybarn.node'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-x64',
             },
           ],
