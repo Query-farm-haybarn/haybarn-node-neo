@@ -4,14 +4,14 @@
     "build": "tsc -b src test",
     "build:src": "tsc -b src",
     "build:test": "tsc -b test",
-    "clean": "rimraf pkgs/@duckdb/node-api/lib",
+    "clean": "rimraf pkgs/@haybarn/node-api/lib",
     "test": "vitest run",
     "test:watch": "vitest",
     "bench": "vitest bench --run",
     "bench:watch": "vitest bench"
   },
   "devDependencies": {
-    "@duckdb/node-bindings": "workspace:*",
+    "@haybarn/node-bindings": "workspace:*",
     "@types/node": "^25.6.0",
     "rimraf": "^6.1.3",
     "typescript": "^6.0.3",

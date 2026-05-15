@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 
 export async function withDatabase(
   { path, config }: { path?: string; config?: duckdb.Config },

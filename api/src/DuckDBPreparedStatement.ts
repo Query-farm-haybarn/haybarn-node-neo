@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { createValue } from './createValue';
 import { DuckDBLogicalType } from './DuckDBLogicalType';
 import { DuckDBMaterializedResult } from './DuckDBMaterializedResult';

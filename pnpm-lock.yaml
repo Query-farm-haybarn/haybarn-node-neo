@@ -10,9 +10,9 @@ importers:
 
   api:
     devDependencies:
-      '@duckdb/node-bindings':
+      '@haybarn/node-bindings':
         specifier: workspace:*
-        version: link:../bindings/pkgs/@duckdb/node-bindings
+        version: link:../bindings/pkgs/@haybarn/node-bindings
       '@types/node':
         specifier: ^25.6.0
         version: 25.6.0
@@ -26,17 +26,17 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5(@types/node@25.6.0)(vite@8.0.10(@types/node@25.6.0))
 
-  api/pkgs/@duckdb/node-api:
+  api/pkgs/@haybarn/node-api:
     dependencies:
-      '@duckdb/node-bindings':
+      '@haybarn/node-bindings':
         specifier: workspace:*
-        version: link:../../../../bindings/pkgs/@duckdb/node-bindings
+        version: link:../../../../bindings/pkgs/@haybarn/node-bindings
 
   bindings:
     devDependencies:
-      '@duckdb/node-bindings':
+      '@haybarn/node-bindings':
         specifier: workspace:*
-        version: link:pkgs/@duckdb/node-bindings
+        version: link:pkgs/@haybarn/node-bindings
       '@types/node':
         specifier: ^25.6.0
         version: 25.6.0
@@ -62,52 +62,52 @@ importers:
         specifier: ^4.1.5
         version: 4.1.5(@types/node@25.6.0)(vite@8.0.10(@types/node@25.6.0))
 
-  bindings/pkgs/@duckdb/node-bindings:
+  bindings/pkgs/@haybarn/node-bindings:
     dependencies:
       detect-libc:
         specifier: ^2.1.2
         version: 2.1.2
     optionalDependencies:
-      '@duckdb/node-bindings-darwin-arm64':
+      '@haybarn/node-bindings-darwin-arm64':
         specifier: workspace:*
         version: link:../node-bindings-darwin-arm64
-      '@duckdb/node-bindings-darwin-x64':
+      '@haybarn/node-bindings-darwin-x64':
         specifier: workspace:*
         version: link:../node-bindings-darwin-x64
-      '@duckdb/node-bindings-linux-arm64':
+      '@haybarn/node-bindings-linux-arm64':
         specifier: workspace:*
         version: link:../node-bindings-linux-arm64
-      '@duckdb/node-bindings-linux-arm64-musl':
+      '@haybarn/node-bindings-linux-arm64-musl':
         specifier: workspace:*
         version: link:../node-bindings-linux-arm64-musl
-      '@duckdb/node-bindings-linux-x64':
+      '@haybarn/node-bindings-linux-x64':
         specifier: workspace:*
         version: link:../node-bindings-linux-x64
-      '@duckdb/node-bindings-linux-x64-musl':
+      '@haybarn/node-bindings-linux-x64-musl':
         specifier: workspace:*
         version: link:../node-bindings-linux-x64-musl
-      '@duckdb/node-bindings-win32-arm64':
+      '@haybarn/node-bindings-win32-arm64':
         specifier: workspace:*
         version: link:../node-bindings-win32-arm64
-      '@duckdb/node-bindings-win32-x64':
+      '@haybarn/node-bindings-win32-x64':
         specifier: workspace:*
         version: link:../node-bindings-win32-x64
 
-  bindings/pkgs/@duckdb/node-bindings-darwin-arm64: {}
+  bindings/pkgs/@haybarn/node-bindings-darwin-arm64: {}
 
-  bindings/pkgs/@duckdb/node-bindings-darwin-x64: {}
+  bindings/pkgs/@haybarn/node-bindings-darwin-x64: {}
 
-  bindings/pkgs/@duckdb/node-bindings-linux-arm64: {}
+  bindings/pkgs/@haybarn/node-bindings-linux-arm64: {}
 
-  bindings/pkgs/@duckdb/node-bindings-linux-arm64-musl: {}
+  bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl: {}
 
-  bindings/pkgs/@duckdb/node-bindings-linux-x64: {}
+  bindings/pkgs/@haybarn/node-bindings-linux-x64: {}
 
-  bindings/pkgs/@duckdb/node-bindings-linux-x64-musl: {}
+  bindings/pkgs/@haybarn/node-bindings-linux-x64-musl: {}
 
-  bindings/pkgs/@duckdb/node-bindings-win32-arm64: {}
+  bindings/pkgs/@haybarn/node-bindings-win32-arm64: {}
 
-  bindings/pkgs/@duckdb/node-bindings-win32-x64: {}
+  bindings/pkgs/@haybarn/node-bindings-win32-x64: {}
 
 packages:
 

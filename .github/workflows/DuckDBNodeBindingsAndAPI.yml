@@ -147,17 +147,17 @@ jobs:
 
       - name: Publish - Bindings - Linux x64 glibc
         if: ${{ inputs.publish }}
-        working-directory: bindings/pkgs/@duckdb/node-bindings-linux-x64
+        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks
 
       - name: Publish - Bindings
         if: ${{ inputs.publish }}
-        working-directory: bindings/pkgs/@duckdb/node-bindings
+        working-directory: bindings/pkgs/@haybarn/node-bindings
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks
 
       - name: Publish - API
         if: ${{ inputs.publish }}
-        working-directory: api/pkgs/@duckdb/node-api
+        working-directory: api/pkgs/@haybarn/node-api
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks
 
   linux_x64_musl:
@@ -212,7 +212,7 @@ jobs:
 
       - name: Publish - Bindings - Linux x64 musl
         if: ${{ inputs.publish }}
-        working-directory: bindings/pkgs/@duckdb/node-bindings-linux-x64-musl
+        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64-musl
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks
 
   linux_arm64:
@@ -259,7 +259,7 @@ jobs:
 
       - name: Publish - Bindings - Linux arm64
         if: ${{ inputs.publish }}
-        working-directory: bindings/pkgs/@duckdb/node-bindings-linux-arm64
+        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks
 
   linux_arm64_musl:
@@ -315,7 +315,7 @@ jobs:
 
       - name: Publish - Bindings - Linux arm64 musl
         if: ${{ inputs.publish }}
-        working-directory: bindings/pkgs/@duckdb/node-bindings-linux-arm64-musl
+        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks
 
   macos_arm64:
@@ -362,7 +362,7 @@ jobs:
 
       - name: Publish - Bindings - Darwin arm64
         if: ${{ inputs.publish }}
-        working-directory: bindings/pkgs/@duckdb/node-bindings-darwin-arm64
+        working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-arm64
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks
 
   macos_x64:
@@ -409,7 +409,7 @@ jobs:
 
       - name: Publish - Bindings - Darwin x64
         if: ${{ inputs.publish }}
-        working-directory: bindings/pkgs/@duckdb/node-bindings-darwin-x64
+        working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-x64
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks
 
   windows_x64:
@@ -478,7 +478,7 @@ jobs:
 
       - name: Publish - Bindings - Win32 x64
         if: ${{ inputs.publish }}
-        working-directory: bindings/pkgs/@duckdb/node-bindings-win32-x64
+        working-directory: bindings/pkgs/@haybarn/node-bindings-win32-x64
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks
 
   windows_arm64:
@@ -547,5 +547,5 @@ jobs:
 
       - name: Publish - Bindings - Win32 arm64
         if: ${{ inputs.publish }}
-        working-directory: bindings/pkgs/@duckdb/node-bindings-win32-arm64
+        working-directory: bindings/pkgs/@haybarn/node-bindings-win32-arm64
         run: pnpm publish ${{ inputs.publish_dry_run && '--dry-run' || '' }} --publish-branch ${{ github.ref_name }} --access public --tag latest --no-git-checks

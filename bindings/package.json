@@ -7,12 +7,12 @@
     "clean": "pnpm run clean:gyp && pnpm run clean:libduckdb && pnpm run clean:package",
     "clean:gyp": "node-gyp clean",
     "clean:libduckdb": "rimraf libduckdb",
-    "clean:package": "rimraf pkgs/@duckdb/**/*.node pkgs/@duckdb/**/*.so pkgs/@duckdb/**/*.dylib pkgs/@duckdb/**/*.dll",
+    "clean:package": "rimraf pkgs/@haybarn/**/*.node pkgs/@haybarn/**/*.so pkgs/@haybarn/**/*.dylib pkgs/@haybarn/**/*.dll",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "devDependencies": {
-    "@duckdb/node-bindings": "workspace:*",
+    "@haybarn/node-bindings": "workspace:*",
     "@types/node": "^25.6.0",
     "cross-replace": "^0.2.0",
     "node-addon-api": "^8.7.0",

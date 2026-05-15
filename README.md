@@ -6,25 +6,25 @@
 
 ### Documentation
 
-- [@duckdb/node-api](api/pkgs/@duckdb/node-api/README.md)
-- [@duckdb/node-bindings](bindings/pkgs/@duckdb/node-bindings/README.md)
-- [@duckdb/node-bindings-darwin-arm64](bindings/pkgs/@duckdb/node-bindings-darwin-arm64/README.md)
-- [@duckdb/node-bindings-darwin-x64](bindings/pkgs/@duckdb/node-bindings-darwin-x64/README.md)
-- [@duckdb/node-bindings-linux-arm64](bindings/pkgs/@duckdb/node-bindings-linux-arm64/README.md)
-- [@duckdb/node-bindings-linux-x64](bindings/pkgs/@duckdb/node-bindings-linux-x64/README.md)
-- [@duckdb/node-bindings-win32-arm64](bindings/pkgs/@duckdb/node-bindings-win32-arm64/README.md)
-- [@duckdb/node-bindings-win32-x64](bindings/pkgs/@duckdb/node-bindings-win32-x64/README.md)
+- [@haybarn/node-api](api/pkgs/@haybarn/node-api/README.md)
+- [@haybarn/node-bindings](bindings/pkgs/@haybarn/node-bindings/README.md)
+- [@haybarn/node-bindings-darwin-arm64](bindings/pkgs/@haybarn/node-bindings-darwin-arm64/README.md)
+- [@haybarn/node-bindings-darwin-x64](bindings/pkgs/@haybarn/node-bindings-darwin-x64/README.md)
+- [@haybarn/node-bindings-linux-arm64](bindings/pkgs/@haybarn/node-bindings-linux-arm64/README.md)
+- [@haybarn/node-bindings-linux-x64](bindings/pkgs/@haybarn/node-bindings-linux-x64/README.md)
+- [@haybarn/node-bindings-win32-arm64](bindings/pkgs/@haybarn/node-bindings-win32-arm64/README.md)
+- [@haybarn/node-bindings-win32-x64](bindings/pkgs/@haybarn/node-bindings-win32-x64/README.md)
 
 ### Published
 
-- [@duckdb/node-api](https://www.npmjs.com/package/@duckdb/node-api)
-- [@duckdb/node-bindings](https://www.npmjs.com/package/@duckdb/node-bindings)
-- [@duckdb/node-bindings-darwin-arm64](https://www.npmjs.com/package/@duckdb/node-bindings-darwin-arm64)
-- [@duckdb/node-bindings-darwin-x64](https://www.npmjs.com/package/@duckdb/node-bindings-darwin-x64)
-- [@duckdb/node-bindings-linux-arm64](https://www.npmjs.com/package/@duckdb/node-bindings-linux-arm64)
-- [@duckdb/node-bindings-linux-x64](https://www.npmjs.com/package/@duckdb/node-bindings-linux-x64)
-- [@duckdb/node-bindings-win32-arm64](https://www.npmjs.com/package/@duckdb/node-bindings-win32-arm64)
-- [@duckdb/node-bindings-win32-x64](https://www.npmjs.com/package/@duckdb/node-bindings-win32-x64)
+- [@haybarn/node-api](https://www.npmjs.com/package/@haybarn/node-api)
+- [@haybarn/node-bindings](https://www.npmjs.com/package/@haybarn/node-bindings)
+- [@haybarn/node-bindings-darwin-arm64](https://www.npmjs.com/package/@haybarn/node-bindings-darwin-arm64)
+- [@haybarn/node-bindings-darwin-x64](https://www.npmjs.com/package/@haybarn/node-bindings-darwin-x64)
+- [@haybarn/node-bindings-linux-arm64](https://www.npmjs.com/package/@haybarn/node-bindings-linux-arm64)
+- [@haybarn/node-bindings-linux-x64](https://www.npmjs.com/package/@haybarn/node-bindings-linux-x64)
+- [@haybarn/node-bindings-win32-arm64](https://www.npmjs.com/package/@haybarn/node-bindings-win32-arm64)
+- [@haybarn/node-bindings-win32-x64](https://www.npmjs.com/package/@haybarn/node-bindings-win32-x64)
 
 ## Development
 
@@ -49,14 +49,14 @@
 ### Update Package Versions
 
 Change version in:
-- `api/pkgs/@duckdb/node-api/package.json`
-- `bindings/pkgs/@duckdb/node-bindings/package.json`
-- `bindings/pkgs/@duckdb/node-bindings-darwin-arm64/package.json`
-- `bindings/pkgs/@duckdb/node-bindings-darwin-x64/package.json`
-- `bindings/pkgs/@duckdb/node-bindings-linux-arm64/package.json`
-- `bindings/pkgs/@duckdb/node-bindings-linux-x64/package.json`
-- `bindings/pkgs/@duckdb/node-bindings-win32-arm64/package.json`
-- `bindings/pkgs/@duckdb/node-bindings-win32-x64/package.json`
+- `api/pkgs/@haybarn/node-api/package.json`
+- `bindings/pkgs/@haybarn/node-bindings/package.json`
+- `bindings/pkgs/@haybarn/node-bindings-darwin-arm64/package.json`
+- `bindings/pkgs/@haybarn/node-bindings-darwin-x64/package.json`
+- `bindings/pkgs/@haybarn/node-bindings-linux-arm64/package.json`
+- `bindings/pkgs/@haybarn/node-bindings-linux-x64/package.json`
+- `bindings/pkgs/@haybarn/node-bindings-win32-arm64/package.json`
+- `bindings/pkgs/@haybarn/node-bindings-win32-x64/package.json`
 
 ### Upgrade DuckDB Version
 

@@ -1,4 +1,4 @@
-import { Interval } from '@duckdb/node-bindings';
+import { Interval } from '@haybarn/node-bindings';
 import { getDuckDBIntervalString } from '../conversion/dateTimeStringConversion';
 
 export class DuckDBIntervalValue implements Interval {

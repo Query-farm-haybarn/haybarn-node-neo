@@ -1,0 +1,14 @@
+{
+  "name": "@haybarn/node-api",
+  "version": "1.5.2-r.2",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "dependencies": {
+    "@haybarn/node-bindings": "workspace:*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Query-farm-haybarn/haybarn-node-neo.git"
+  }
+}

@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { DuckDBLogicalType } from './DuckDBLogicalType';
 import { DuckDBTypeId } from './DuckDBTypeId';
 import { Json } from './Json';

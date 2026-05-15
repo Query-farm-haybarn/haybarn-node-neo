@@ -9,7 +9,7 @@ import duckdb, {
   TimestampNanoseconds,
   TimestampSeconds,
   TimeTZ,
-} from '@duckdb/node-bindings';
+} from '@haybarn/node-bindings';
 import { expect, suite, test } from 'vitest';
 import { expectLogicalType } from './utils/expectLogicalType';
 import {

@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import os from 'os';
 import { ExpectedLogicalType } from './ExpectedLogicalType';
 import { isValid } from './isValid';
