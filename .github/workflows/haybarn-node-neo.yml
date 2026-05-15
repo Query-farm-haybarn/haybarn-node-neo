@@ -52,13 +52,13 @@ jobs:
       contents: read
       id-token: write   # reserved for npm OIDC trusted publishing
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: 'https://registry.npmjs.org'
       - run: echo "NODE_DIR=$(dirname $(dirname $(which node)))" >> "$GITHUB_ENV"
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - run: pnpm install --ignore-scripts
       - name: Bindings — build & test
         working-directory: bindings
@@ -98,12 +98,12 @@ jobs:
       ALPINE_IMAGE: node:24-alpine
       PNPM_VERSION: 10.33.0
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: 'https://registry.npmjs.org'
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - name: Bindings & API — build & test (in Alpine container)
         run: |
           docker run --rm \
@@ -139,13 +139,13 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: 'https://registry.npmjs.org'
       - run: echo "NODE_DIR=$(dirname $(dirname $(which node)))" >> "$GITHUB_ENV"
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - run: pnpm install --ignore-scripts
       - name: Bindings — build & test
         working-directory: bindings
@@ -167,12 +167,12 @@ jobs:
       ALPINE_IMAGE: node:24-alpine
       PNPM_VERSION: 10.33.0
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: 'https://registry.npmjs.org'
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - name: Bindings & API — build & test (in Alpine container)
         run: |
           docker run --rm \
@@ -205,13 +205,13 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: 'https://registry.npmjs.org'
       - run: echo "NODE_DIR=$(dirname $(dirname $(which node)))" >> "$GITHUB_ENV"
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - run: pnpm install --ignore-scripts
       - name: Bindings — build & test
         working-directory: bindings
@@ -235,13 +235,13 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: 24
           registry-url: 'https://registry.npmjs.org'
       - run: echo "NODE_DIR=$(dirname $(dirname $(which node)))" >> "$GITHUB_ENV"
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - run: pnpm install --ignore-scripts
       - name: Bindings — build & test
         working-directory: bindings
@@ -268,8 +268,8 @@ jobs:
       # historical release.
       NODE_VERSION: '24.10.0'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
@@ -278,7 +278,7 @@ jobs:
         run: echo "NODE_DIR=D:\\a\\node-v$NODE_VERSION" >> "$GITHUB_ENV"
       - name: Cache Node directory
         id: cache-node-dir
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: D:\a\node-v${{ env.NODE_VERSION }}
           key: node-dir-v${{ env.NODE_VERSION }}-win-x64
@@ -293,7 +293,7 @@ jobs:
         if: steps.cache-node-dir.outputs.cache-hit != 'true'
         shell: bash
         run: curl -sSL "https://nodejs.org/download/release/v$NODE_VERSION/win-x64/node.lib" --create-dirs -o "$NODE_DIR/Release/node.lib"
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - run: pnpm install --ignore-scripts
       - name: Bindings — build & test
         working-directory: bindings
@@ -318,8 +318,8 @@ jobs:
     env:
       NODE_VERSION: '24.10.0'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
@@ -328,7 +328,7 @@ jobs:
         run: echo "NODE_DIR=C:\\a\\node-v$NODE_VERSION" >> "$GITHUB_ENV"
       - name: Cache Node directory
         id: cache-node-dir
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: C:\a\node-v${{ env.NODE_VERSION }}
           key: node-dir-v${{ env.NODE_VERSION }}-win-arm64
@@ -343,7 +343,7 @@ jobs:
         if: steps.cache-node-dir.outputs.cache-hit != 'true'
         shell: bash
         run: curl -sSL "https://nodejs.org/download/release/v$NODE_VERSION/win-arm64/node.lib" --create-dirs -o "$NODE_DIR/Release/node.lib"
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - run: pnpm install --ignore-scripts
       - name: Bindings — build & test
         working-directory: bindings
