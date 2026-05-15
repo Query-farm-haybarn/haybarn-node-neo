@@ -1,0 +1,360 @@
+# Haybarn Node: builds the native addon for each supported platform, runs
+# bindings + API tests, and publishes the 10 @haybarn/* packages to npm.
+#
+# Trigger: push of a tag like `haybarn-v1.5.2` → builds all platforms, then
+# publishes (real, not dry-run). Also reachable via workflow_dispatch for
+# debugging, where the `publish` and `publish_dry_run` inputs are honored.
+#
+# A matching Haybarn engine release (`haybarn-v<ver>` on Query-farm-haybarn/haybarn)
+# must exist before this runs — the per-platform fetch scripts pull
+# `libhaybarn-<plat>.zip` from that release.
+name: Haybarn Node
+
+on:
+  push:
+    tags:
+      - 'haybarn-v[0-9]+.[0-9]+.[0-9]+*'
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish to npm (otherwise just build + test)'
+        type: boolean
+        required: true
+        default: false
+      publish_dry_run:
+        description: 'When publishing, use --dry-run'
+        type: boolean
+        required: true
+        default: true
+
+concurrency:
+  group: haybarn-node-${{ github.ref }}
+  cancel-in-progress: false
+
+# Tag-driven runs always publish for real. Dispatch runs honor the inputs.
+# (Concrete booleans, not expressions, so the per-step `if:` and `--dry-run`
+# flag conditionals stay simple.)
+env:
+  PUBLISH: ${{ startsWith(github.ref, 'refs/tags/haybarn-v') || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+  DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_dry_run }}
+
+jobs:
+  linux_x64:
+    name: Linux x64 glibc
+    runs-on: ubuntu-24.04
+    # Pinned by date tag (same convention as HAYBARN/ROLL-FORWARD.md). The
+    # unpinned `:latest` alias silently moves and surfaces compiler-strictness
+    # surprises mid-release.
+    container:
+      image: quay.io/pypa/manylinux_2_28_x86_64:2024.10.07-1
+    permissions:
+      contents: read
+      id-token: write   # reserved for npm OIDC trusted publishing
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+      - run: echo "NODE_DIR=$(dirname $(dirname $(which node)))" >> "$GITHUB_ENV"
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --ignore-scripts
+      - name: Bindings — build & test
+        working-directory: bindings
+        run: pnpm run build && pnpm test
+      - name: API — build & test
+        working-directory: api
+        run: pnpm run build && pnpm test
+
+      - name: Publish — @haybarn/node-bindings-linux-x64
+        if: env.PUBLISH == 'true'
+        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+      - name: Publish — @haybarn/node-bindings (dispatcher)
+        if: env.PUBLISH == 'true'
+        working-directory: bindings/pkgs/@haybarn/node-bindings
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+      - name: Publish — @haybarn/node-api
+        if: env.PUBLISH == 'true'
+        working-directory: api/pkgs/@haybarn/node-api
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+
+  linux_x64_musl:
+    name: Linux x64 musl
+    # No `container:` — JS-based actions (checkout, setup-node, pnpm-setup)
+    # need a glibc host. The musl build/test runs in `docker run` below.
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      ALPINE_IMAGE: node:24-alpine
+      PNPM_VERSION: 10.33.0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+      - uses: pnpm/action-setup@v4
+      - name: Bindings & API — build & test (in Alpine container)
+        run: |
+          docker run --rm \
+            -v "$PWD:/work" -w /work \
+            -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" \
+            -e PNPM_VERSION \
+            "$ALPINE_IMAGE" \
+            sh -c '
+              set -eux
+              trap "chown -R $HOST_UID:$HOST_GID /work 2>/dev/null || true" EXIT
+              apk add --no-cache python3 make g++
+              npm install -g "pnpm@$PNPM_VERSION"
+              pnpm install --ignore-scripts
+              # node-gyp 10+ stages Node headers under ~/.cache/node-gyp/<ver>/
+              (cd bindings && pnpm exec node-gyp install)
+              export NODE_DIR="$HOME/.cache/node-gyp/$(node -p process.versions.node)"
+              (cd bindings && pnpm run build && pnpm test)
+              (cd api && pnpm run build && pnpm test)
+            '
+      - name: Publish — @haybarn/node-bindings-linux-x64-musl
+        if: env.PUBLISH == 'true'
+        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64-musl
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+
+  linux_arm64:
+    name: Linux arm64 glibc
+    runs-on: ubuntu-24.04-arm
+    container:
+      image: quay.io/pypa/manylinux_2_28_aarch64:2024.10.07-1
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+      - run: echo "NODE_DIR=$(dirname $(dirname $(which node)))" >> "$GITHUB_ENV"
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --ignore-scripts
+      - name: Bindings — build & test
+        working-directory: bindings
+        run: pnpm run build && pnpm test
+      - name: Publish — @haybarn/node-bindings-linux-arm64
+        if: env.PUBLISH == 'true'
+        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+
+  linux_arm64_musl:
+    name: Linux arm64 musl
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      ALPINE_IMAGE: node:24-alpine
+      PNPM_VERSION: 10.33.0
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+      - uses: pnpm/action-setup@v4
+      - name: Bindings & API — build & test (in Alpine container)
+        run: |
+          docker run --rm \
+            -v "$PWD:/work" -w /work \
+            -e HOST_UID="$(id -u)" -e HOST_GID="$(id -g)" \
+            -e PNPM_VERSION \
+            "$ALPINE_IMAGE" \
+            sh -c '
+              set -eux
+              trap "chown -R $HOST_UID:$HOST_GID /work 2>/dev/null || true" EXIT
+              apk add --no-cache python3 make g++
+              npm install -g "pnpm@$PNPM_VERSION"
+              pnpm install --ignore-scripts
+              (cd bindings && pnpm exec node-gyp install)
+              export NODE_DIR="$HOME/.cache/node-gyp/$(node -p process.versions.node)"
+              (cd bindings && pnpm run build && pnpm test)
+              (cd api && pnpm run build && pnpm test)
+            '
+      - name: Publish — @haybarn/node-bindings-linux-arm64-musl
+        if: env.PUBLISH == 'true'
+        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+
+  macos_arm64:
+    name: Mac OS X arm64
+    runs-on: macos-15
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+      - run: echo "NODE_DIR=$(dirname $(dirname $(which node)))" >> "$GITHUB_ENV"
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --ignore-scripts
+      - name: Bindings — build & test
+        working-directory: bindings
+        run: pnpm run build && pnpm test
+      - name: API — build & test
+        working-directory: api
+        run: pnpm run build && pnpm test
+      - name: Publish — @haybarn/node-bindings-darwin-arm64
+        if: env.PUBLISH == 'true'
+        working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-arm64
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+
+  macos_x64:
+    name: Mac OS X x64
+    # macos-15-intel: GitHub's pinned Intel runner image (Sequoia, Apple Intel
+    # x86_64). macos-13/14 retire over 2025; -intel name is the durable one.
+    runs-on: macos-15-intel
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
+      - run: echo "NODE_DIR=$(dirname $(dirname $(which node)))" >> "$GITHUB_ENV"
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --ignore-scripts
+      - name: Bindings — build & test
+        working-directory: bindings
+        run: pnpm run build && pnpm test
+      - name: API — build & test
+        working-directory: api
+        run: pnpm run build && pnpm test
+      - name: Publish — @haybarn/node-bindings-darwin-x64
+        if: env.PUBLISH == 'true'
+        working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-x64
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+
+  windows_x64:
+    name: Windows x64
+    runs-on: windows-2022
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      # Pinned Node version that we know we can fetch headers + node.lib for.
+      # node-gyp on Windows needs both, hosted under nodejs.org/dist for any
+      # historical release.
+      NODE_VERSION: '24.10.0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+      - name: Record Node directory
+        shell: bash
+        run: echo "NODE_DIR=D:\\a\\node-v$NODE_VERSION" >> "$GITHUB_ENV"
+      - name: Cache Node directory
+        id: cache-node-dir
+        uses: actions/cache@v4
+        with:
+          path: D:\a\node-v${{ env.NODE_VERSION }}
+          key: node-dir-v${{ env.NODE_VERSION }}-win-x64
+      - name: Download Node headers
+        if: steps.cache-node-dir.outputs.cache-hit != 'true'
+        shell: bash
+        run: curl -sSL "https://nodejs.org/download/release/v$NODE_VERSION/node-v$NODE_VERSION-headers.tar.gz" -o "D:/a/node-headers.tar.gz"
+      - name: Extract Node headers
+        if: steps.cache-node-dir.outputs.cache-hit != 'true'
+        run: tar -xzf D:\a\node-headers.tar.gz -C D:\a
+      - name: Download Node lib
+        if: steps.cache-node-dir.outputs.cache-hit != 'true'
+        shell: bash
+        run: curl -sSL "https://nodejs.org/download/release/v$NODE_VERSION/win-x64/node.lib" --create-dirs -o "$NODE_DIR/Release/node.lib"
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --ignore-scripts
+      - name: Bindings — build & test
+        working-directory: bindings
+        run: pnpm run build && pnpm test
+      - name: API — build & test
+        working-directory: api
+        run: pnpm run build && pnpm test
+      - name: Publish — @haybarn/node-bindings-win32-x64
+        if: env.PUBLISH == 'true'
+        working-directory: bindings/pkgs/@haybarn/node-bindings-win32-x64
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        shell: bash
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+
+  windows_arm64:
+    name: Windows arm64
+    runs-on: windows-11-arm
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      NODE_VERSION: '24.10.0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+      - name: Record Node directory
+        shell: bash
+        run: echo "NODE_DIR=C:\\a\\node-v$NODE_VERSION" >> "$GITHUB_ENV"
+      - name: Cache Node directory
+        id: cache-node-dir
+        uses: actions/cache@v4
+        with:
+          path: C:\a\node-v${{ env.NODE_VERSION }}
+          key: node-dir-v${{ env.NODE_VERSION }}-win-arm64
+      - name: Download Node headers
+        if: steps.cache-node-dir.outputs.cache-hit != 'true'
+        shell: bash
+        run: curl -sSL "https://nodejs.org/download/release/v$NODE_VERSION/node-v$NODE_VERSION-headers.tar.gz" -o "C:/a/node-headers.tar.gz"
+      - name: Extract Node headers
+        if: steps.cache-node-dir.outputs.cache-hit != 'true'
+        run: tar -xzf C:\a\node-headers.tar.gz -C C:\a
+      - name: Download Node lib
+        if: steps.cache-node-dir.outputs.cache-hit != 'true'
+        shell: bash
+        run: curl -sSL "https://nodejs.org/download/release/v$NODE_VERSION/win-arm64/node.lib" --create-dirs -o "$NODE_DIR/Release/node.lib"
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --ignore-scripts
+      - name: Bindings — build & test
+        working-directory: bindings
+        run: pnpm run build && pnpm test
+      - name: API — build & test
+        working-directory: api
+        run: pnpm run build && pnpm test
+      - name: Publish — @haybarn/node-bindings-win32-arm64
+        if: env.PUBLISH == 'true'
+        working-directory: bindings/pkgs/@haybarn/node-bindings-win32-arm64
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        shell: bash
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
