@@ -309,52 +309,6 @@ jobs:
         shell: bash
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
 
-  windows_arm64:
-    name: Windows arm64
-    runs-on: windows-11-arm
-    permissions:
-      contents: read
-      id-token: write
-    env:
-      NODE_VERSION: '24.10.0'
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          registry-url: 'https://registry.npmjs.org'
-      - name: Record Node directory
-        shell: bash
-        run: echo "NODE_DIR=C:\\a\\node-v$NODE_VERSION" >> "$GITHUB_ENV"
-      - name: Cache Node directory
-        id: cache-node-dir
-        uses: actions/cache@v5
-        with:
-          path: C:\a\node-v${{ env.NODE_VERSION }}
-          key: node-dir-v${{ env.NODE_VERSION }}-win-arm64
-      - name: Download Node headers
-        if: steps.cache-node-dir.outputs.cache-hit != 'true'
-        shell: bash
-        run: curl -sSL "https://nodejs.org/download/release/v$NODE_VERSION/node-v$NODE_VERSION-headers.tar.gz" -o "C:/a/node-headers.tar.gz"
-      - name: Extract Node headers
-        if: steps.cache-node-dir.outputs.cache-hit != 'true'
-        run: tar -xzf C:\a\node-headers.tar.gz -C C:\a
-      - name: Download Node lib
-        if: steps.cache-node-dir.outputs.cache-hit != 'true'
-        shell: bash
-        run: curl -sSL "https://nodejs.org/download/release/v$NODE_VERSION/win-arm64/node.lib" --create-dirs -o "$NODE_DIR/Release/node.lib"
-      - uses: pnpm/action-setup@v6
-      - run: pnpm install --ignore-scripts
-      - name: Bindings — build & test
-        working-directory: bindings
-        run: pnpm run build && pnpm test
-      - name: API — build & test
-        working-directory: api
-        run: pnpm run build && pnpm test
-      - name: Publish — @haybarn/node-bindings-win32-arm64
-        if: env.PUBLISH == 'true'
-        working-directory: bindings/pkgs/@haybarn/node-bindings-win32-arm64
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        shell: bash
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+  # windows_arm64 intentionally omitted: the Haybarn engine release does not
+  # produce libhaybarn-windows-arm64.zip, so there's nothing to link against.
+  # Re-add this job if/when the engine starts shipping a windows-arm64 build.
