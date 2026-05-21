@@ -76,19 +76,19 @@ jobs:
         if: env.PUBLISH == 'true'
         working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
       - name: Publish — @haybarn/node-bindings (dispatcher)
         if: env.PUBLISH == 'true'
         working-directory: bindings/pkgs/@haybarn/node-bindings
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
       - name: Publish — @haybarn/node-api
         if: env.PUBLISH == 'true'
         working-directory: api/pkgs/@haybarn/node-api
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   linux_x64_musl:
@@ -132,7 +132,7 @@ jobs:
         if: env.PUBLISH == 'true'
         working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64-musl
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   linux_arm64:
@@ -159,7 +159,7 @@ jobs:
         if: env.PUBLISH == 'true'
         working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   linux_arm64_musl:
@@ -200,7 +200,7 @@ jobs:
         if: env.PUBLISH == 'true'
         working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   macos_arm64:
@@ -228,7 +228,7 @@ jobs:
         if: env.PUBLISH == 'true'
         working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-arm64
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   macos_x64:
@@ -258,7 +258,7 @@ jobs:
         if: env.PUBLISH == 'true'
         working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-x64
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   windows_x64:
@@ -310,7 +310,7 @@ jobs:
         if: env.PUBLISH == 'true'
         working-directory: bindings/pkgs/@haybarn/node-bindings-win32-x64
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         shell: bash
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
