@@ -38,6 +38,11 @@ concurrency:
 env:
   PUBLISH: ${{ startsWith(github.ref, 'refs/tags/haybarn-v') || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
   DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_dry_run }}
+  # rc/prerelease tags (haybarn-v1.5.3-rc2) publish under the `rc` dist-tag so a
+  # bare `npm i @haybarn/node-api` doesn't pull a prerelease; final tags
+  # (haybarn-v1.5.3) publish under `latest`. Auto-derived so finals don't need a
+  # manual flip-back.
+  NPM_DIST_TAG: ${{ contains(github.ref_name, '-rc') && 'rc' || 'latest' }}
 
 jobs:
   linux_x64:
@@ -72,19 +77,19 @@ jobs:
         working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
       - name: Publish — @haybarn/node-bindings (dispatcher)
         if: env.PUBLISH == 'true'
         working-directory: bindings/pkgs/@haybarn/node-bindings
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
       - name: Publish — @haybarn/node-api
         if: env.PUBLISH == 'true'
         working-directory: api/pkgs/@haybarn/node-api
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   linux_x64_musl:
     name: Linux x64 musl
@@ -128,7 +133,7 @@ jobs:
         working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64-musl
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   linux_arm64:
     name: Linux arm64 glibc
@@ -155,7 +160,7 @@ jobs:
         working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   linux_arm64_musl:
     name: Linux arm64 musl
@@ -196,7 +201,7 @@ jobs:
         working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   macos_arm64:
     name: Mac OS X arm64
@@ -224,7 +229,7 @@ jobs:
         working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-arm64
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   macos_x64:
     name: Mac OS X x64
@@ -254,7 +259,7 @@ jobs:
         working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-x64
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   windows_x64:
     name: Windows x64
@@ -307,7 +312,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         shell: bash
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag latest --no-git-checks
+        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
   # windows_arm64 intentionally omitted: the Haybarn engine release does not
   # produce libhaybarn-windows-arm64.zip, so there's nothing to link against.
