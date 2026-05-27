@@ -1,6 +1,6 @@
 {
   "name": "@haybarn/node-bindings",
-  "version": "1.5.3-rc2",
+  "version": "1.5.3-rc4",
   "license": "MIT",
   "main": "./haybarn.js",
   "types": "./haybarn.d.ts",

@@ -1,6 +1,6 @@
 {
   "name": "@haybarn/node-bindings-win32-arm64",
-  "version": "1.5.3-rc2",
+  "version": "1.5.3-rc4",
   "license": "MIT",
   "os": [
     "win32"
