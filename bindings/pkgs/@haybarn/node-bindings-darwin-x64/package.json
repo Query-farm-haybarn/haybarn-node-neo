@@ -1,6 +1,6 @@
 {
   "name": "@haybarn/node-bindings-darwin-x64",
-  "version": "1.5.3-rc4",
+  "version": "1.5.3-rc7",
   "license": "MIT",
   "os": [
     "darwin"

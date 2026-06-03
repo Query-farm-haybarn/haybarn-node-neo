@@ -1,6 +1,6 @@
 {
   "name": "@haybarn/node-api",
-  "version": "1.5.3-rc4",
+  "version": "1.5.3-rc7",
   "license": "MIT",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

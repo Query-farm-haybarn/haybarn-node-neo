@@ -1,7 +1,7 @@
 import os
 from fetch_libhaybarn import fetch_libhaybarn
 
-zip_url = "https://github.com/Query-farm-haybarn/haybarn/releases/download/haybarn-v1.5.3-rc2/libhaybarn-linux-amd64-musl.zip"
+zip_url = "https://github.com/Query-farm-haybarn/haybarn/releases/download/haybarn-v1.5.3-rc7/libhaybarn-linux-amd64-musl.zip"
 output_dir = os.path.join(os.path.dirname(__file__), "..", "libhaybarn")
 files = [
   "duckdb.h",
