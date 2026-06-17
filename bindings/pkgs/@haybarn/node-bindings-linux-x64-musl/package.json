@@ -1,6 +1,6 @@
 {
   "name": "@haybarn/node-bindings-linux-x64-musl",
-  "version": "1.5.3-rc7",
+  "version": "1.5.4-rc1",
   "license": "MIT",
   "os": [
     "linux"
