@@ -1,6 +1,6 @@
 {
   "name": "@haybarn/node-bindings-linux-arm64",
-  "version": "1.5.4-rc1",
+  "version": "1.5.5-rc1",
   "license": "MIT",
   "os": [
     "linux"
