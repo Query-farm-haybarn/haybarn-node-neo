@@ -403,6 +403,11 @@ export function result_chunk_count(result: Result): number;
 // DUCKDB_C_API duckdb_result_type duckdb_result_return_type(duckdb_result result);
 export function result_return_type(result: Result): ResultType;
 
+/**
+ * Consume the remaining chunks in a result and encode them as an Arrow IPC stream.
+ */
+export function result_to_arrow_ipc_stream(result: Result): Promise<Uint8Array>;
+
 // #ifndef DUCKDB_API_NO_DEPRECATED
 // DUCKDB_C_API bool duckdb_value_boolean(duckdb_result *result, idx_t col, idx_t row);
 // DUCKDB_C_API int8_t duckdb_value_int8(duckdb_result *result, idx_t col, idx_t row);

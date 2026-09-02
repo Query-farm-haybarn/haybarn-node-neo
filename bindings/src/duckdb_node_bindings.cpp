@@ -11,7 +11,7 @@
 #include <string>
 #include <vector>
 
-#include "duckdb.h"
+#include "arrow_ipc.hpp"
 
 #define DEFAULT_DUCKDB_API "node-neo-bindings"
 
@@ -1443,6 +1443,48 @@ private:
 
 };
 
+class ResultToArrowIpcStreamWorker : public PromiseWorker {
+
+public:
+
+  ResultToArrowIpcStreamWorker(Napi::Env env, Napi::Value resultValue)
+    : PromiseWorker(env),
+    result_ptr_(GetResultFromExternal(env, resultValue)),
+    resultValueRef_(MakeValueRef(resultValue))
+  {
+    ArrowBufferInit(&output_);
+  }
+
+  ~ResultToArrowIpcStreamWorker() override {
+    ArrowBufferReset(&output_);
+  }
+
+protected:
+
+  void Execute() override {
+    ArrowError error{};
+    const ArrowErrorCode result =
+      HayBarnResultToArrowIpcStream(result_ptr_, &output_, &error);
+    if (result != NANOARROW_OK) {
+      SetError(error.message[0] == '\0'
+        ? "Failed to encode Arrow IPC stream"
+        : error.message);
+    }
+  }
+
+  Napi::Value Result() override {
+    return Napi::Buffer<uint8_t>::NewOrCopy(Env(), output_.data,
+                                            output_.size_bytes);
+  }
+
+private:
+
+  duckdb_result *result_ptr_;
+  Napi::Reference<Napi::Value> resultValueRef_;
+  ArrowBuffer output_;
+
+};
+
 // Enums
 
 void DefineEnumMember(Napi::Object enumObj, const char *key, uint32_t value) {
@@ -1592,6 +1634,7 @@ public:
       InstanceMethod("result_is_streaming", &DuckDBNodeAddon::result_is_streaming),
       InstanceMethod("result_chunk_count", &DuckDBNodeAddon::result_chunk_count),
       InstanceMethod("result_return_type", &DuckDBNodeAddon::result_return_type),
+      InstanceMethod("result_to_arrow_ipc_stream", &DuckDBNodeAddon::result_to_arrow_ipc_stream),
 
       InstanceMethod("vector_size", &DuckDBNodeAddon::vector_size),
 
@@ -2216,6 +2259,15 @@ private:
     auto result_ptr = GetResultFromExternal(env, info[0]);
     auto result_type = duckdb_result_return_type(*result_ptr);
     return Napi::Number::New(env, result_type);
+  }
+
+  // function result_to_arrow_ipc_stream(result: Result): Promise<Uint8Array>
+  Napi::Value result_to_arrow_ipc_stream(const Napi::CallbackInfo& info) {
+    auto env = info.Env();
+    auto resultValue = info[0];
+    auto worker = new ResultToArrowIpcStreamWorker(env, resultValue);
+    worker->Queue();
+    return worker->Promise();
   }
 
   // #ifndef DUCKDB_API_NO_DEPRECATED
