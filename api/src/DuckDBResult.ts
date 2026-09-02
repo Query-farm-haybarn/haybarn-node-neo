@@ -136,6 +136,11 @@ export class DuckDBResult {
     return duckdb.rows_changed(this.result);
   }
 
+  /** Consume the remaining rows and encode them as an Arrow IPC stream. */
+  public async toArrowIPCStream(): Promise<Uint8Array> {
+    return duckdb.result_to_arrow_ipc_stream(this.result);
+  }
+
   public async fetchChunk(): Promise<DuckDBDataChunk | null> {
     const chunk = await duckdb.fetch_chunk(this.result);
     return chunk ? new DuckDBDataChunk(chunk) : null;
