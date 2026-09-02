@@ -67,4 +67,55 @@ suite('Arrow IPC', () => {
       expect(table.schema.fields[0].type.toString()).toBe('Int32');
     });
   });
+
+  test('preserves lossless Arrow extension metadata', async () => {
+    await withConnection(async (connection) => {
+      await duckdb.query(connection, 'SET arrow_lossless_conversion = true');
+      await duckdb.query(connection, "SET arrow_output_version = '1.0'");
+
+      const result = await duckdb.query(
+        connection,
+        `SELECT bool, hugeint, uhugeint, bignum, time_tz, uuid, bit, geometry
+        FROM test_all_types()`
+      );
+      const table = tableFromIPC(
+        await duckdb.result_to_arrow_ipc_stream(result)
+      );
+      const extensions = Object.fromEntries(
+        table.schema.fields.map((field) => [
+          field.name,
+          {
+            name: field.metadata.get('ARROW:extension:name'),
+            metadata: field.metadata.get('ARROW:extension:metadata'),
+          },
+        ])
+      );
+
+      expect(extensions).toEqual({
+        bool: { name: 'arrow.bool8', metadata: '' },
+        hugeint: {
+          name: 'arrow.opaque',
+          metadata: '{"type_name":"hugeint","vendor_name":"DuckDB"}',
+        },
+        uhugeint: {
+          name: 'arrow.opaque',
+          metadata: '{"type_name":"uhugeint","vendor_name":"DuckDB"}',
+        },
+        bignum: {
+          name: 'arrow.opaque',
+          metadata: '{"type_name":"bignum","vendor_name":"DuckDB"}',
+        },
+        time_tz: {
+          name: 'arrow.opaque',
+          metadata: '{"type_name":"time_tz","vendor_name":"DuckDB"}',
+        },
+        uuid: { name: 'arrow.uuid', metadata: '' },
+        bit: {
+          name: 'arrow.opaque',
+          metadata: '{"type_name":"bit","vendor_name":"DuckDB"}',
+        },
+        geometry: { name: 'geoarrow.wkb', metadata: '{}' },
+      });
+    });
+  });
 });
