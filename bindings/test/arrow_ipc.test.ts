@@ -13,7 +13,7 @@ suite('Arrow IPC', () => {
         "CREATE TYPE mood AS ENUM ('sad', 'ok', 'happy')"
       );
 
-      const result = await duckdb.query(
+      const prepared = await duckdb.prepare(
         connection,
         `SELECT i,
           CASE i % 3
@@ -23,27 +23,33 @@ suite('Arrow IPC', () => {
           END AS mood
         FROM range(5000) AS rows(i)`
       );
-      const bytes = await duckdb.result_to_arrow_ipc_stream(result);
-      const table = tableFromIPC(bytes);
+      try {
+        const result = await duckdb.execute_prepared_streaming(prepared);
+        const bytes = await duckdb.result_to_arrow_ipc_stream(result);
+        const table = tableFromIPC(bytes);
 
-      expect(Buffer.isBuffer(bytes)).toBe(true);
-      expect(table.numRows).toBe(5000);
-      expect(table.batches).toHaveLength(3);
-      expect(table.schema.fields.map((field) => field.name)).toEqual([
-        'i',
-        'mood',
-      ]);
-      expect(table.schema.fields[1].type.toString()).toBe(
-        'Dictionary<Uint8, Utf8>'
-      );
-      expect([...table.getChild('mood')!.slice(0, 6)]).toEqual([
-        'sad',
-        'ok',
-        'happy',
-        'sad',
-        'ok',
-        'happy',
-      ]);
+        expect(duckdb.result_is_streaming(result)).toBe(true);
+        expect(Buffer.isBuffer(bytes)).toBe(true);
+        expect(table.numRows).toBe(5000);
+        expect(table.batches).toHaveLength(3);
+        expect(table.schema.fields.map((field) => field.name)).toEqual([
+          'i',
+          'mood',
+        ]);
+        expect(table.schema.fields[1].type.toString()).toBe(
+          'Dictionary<Uint8, Utf8>'
+        );
+        expect([...table.getChild('mood')!.slice(0, 6)]).toEqual([
+          'sad',
+          'ok',
+          'happy',
+          'sad',
+          'ok',
+          'happy',
+        ]);
+      } finally {
+        duckdb.destroy_prepare_sync(prepared);
+      }
     });
   });
 
