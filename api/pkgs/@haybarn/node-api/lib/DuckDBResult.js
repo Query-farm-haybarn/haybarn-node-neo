@@ -110,9 +110,9 @@ class DuckDBResult {
     get rowsChanged() {
         return node_bindings_1.default.rows_changed(this.result);
     }
-    /** Consume the remaining rows and encode them as an Arrow IPC stream. */
-    async toArrowIPCStream() {
-        return node_bindings_1.default.result_to_arrow_ipc_stream(this.result);
+    /** Consume the remaining rows and encode them as buffered Arrow IPC stream-format bytes. */
+    async toArrowIPC() {
+        return node_bindings_1.default.result_to_arrow_ipc(this.result);
     }
     async fetchChunk() {
         const chunk = await node_bindings_1.default.fetch_chunk(this.result);

@@ -25,7 +25,7 @@ suite('Arrow IPC', () => {
       );
       try {
         const result = await duckdb.execute_prepared_streaming(prepared);
-        const bytes = await duckdb.result_to_arrow_ipc_stream(result);
+        const bytes = await duckdb.result_to_arrow_ipc(result);
         const table = tableFromIPC(bytes);
 
         expect(duckdb.result_is_streaming(result)).toBe(true);
@@ -59,7 +59,7 @@ suite('Arrow IPC', () => {
         connection,
         'SELECT 42::INTEGER AS answer WHERE false'
       );
-      const bytes = await duckdb.result_to_arrow_ipc_stream(result);
+      const bytes = await duckdb.result_to_arrow_ipc(result);
       const table = tableFromIPC(bytes);
 
       expect(table.numRows).toBe(0);
@@ -79,7 +79,7 @@ suite('Arrow IPC', () => {
         FROM test_all_types()`
       );
       const table = tableFromIPC(
-        await duckdb.result_to_arrow_ipc_stream(result)
+        await duckdb.result_to_arrow_ipc(result)
       );
       const extensions = Object.fromEntries(
         table.schema.fields.map((field) => [

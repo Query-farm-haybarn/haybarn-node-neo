@@ -1634,7 +1634,7 @@ public:
       InstanceMethod("result_is_streaming", &DuckDBNodeAddon::result_is_streaming),
       InstanceMethod("result_chunk_count", &DuckDBNodeAddon::result_chunk_count),
       InstanceMethod("result_return_type", &DuckDBNodeAddon::result_return_type),
-      InstanceMethod("result_to_arrow_ipc_stream", &DuckDBNodeAddon::result_to_arrow_ipc_stream),
+      InstanceMethod("result_to_arrow_ipc", &DuckDBNodeAddon::result_to_arrow_ipc),
 
       InstanceMethod("vector_size", &DuckDBNodeAddon::vector_size),
 
@@ -2261,8 +2261,8 @@ private:
     return Napi::Number::New(env, result_type);
   }
 
-  // function result_to_arrow_ipc_stream(result: Result): Promise<Uint8Array>
-  Napi::Value result_to_arrow_ipc_stream(const Napi::CallbackInfo& info) {
+  // function result_to_arrow_ipc(result: Result): Promise<Uint8Array>
+  Napi::Value result_to_arrow_ipc(const Napi::CallbackInfo& info) {
     auto env = info.Env();
     auto resultValue = info[0];
     auto worker = new ResultToArrowIpcStreamWorker(env, resultValue);

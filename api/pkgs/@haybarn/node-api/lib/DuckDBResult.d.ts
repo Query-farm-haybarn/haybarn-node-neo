@@ -27,8 +27,8 @@ export declare class DuckDBResult {
     columnNameAndTypeObjectsJson(): Json;
     get isStreaming(): boolean;
     get rowsChanged(): number;
-    /** Consume the remaining rows and encode them as an Arrow IPC stream. */
-    toArrowIPCStream(): Promise<Uint8Array>;
+    /** Consume the remaining rows and encode them as buffered Arrow IPC stream-format bytes. */
+    toArrowIPC(): Promise<Uint8Array>;
     fetchChunk(): Promise<DuckDBDataChunk | null>;
     fetchAllChunks(): Promise<DuckDBDataChunk[]>;
     getColumns(): Promise<DuckDBValue[][]>;
