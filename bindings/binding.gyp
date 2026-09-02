@@ -27,6 +27,26 @@
   },
   'targets': [
     {
+      'target_name': 'nanoarrow',
+      'type': 'static_library',
+      'sources': [
+        'vendor/nanoarrow/src/flatcc.c',
+        'vendor/nanoarrow/src/nanoarrow.c',
+        'vendor/nanoarrow/src/nanoarrow_ipc.c',
+      ],
+      'include_dirs': ['<(module_root_dir)/vendor/nanoarrow/include'],
+      'direct_dependent_settings': {
+        'include_dirs': ['<(module_root_dir)/vendor/nanoarrow/include'],
+      },
+      'conditions': [
+        ['OS=="mac"', {
+          'xcode_settings': {
+            'MACOSX_DEPLOYMENT_TARGET': '11.0',
+          },
+        }],
+      ],
+    },
+    {
       'target_name': 'fetch_libhaybarn',
       'type': 'none',
       'conditions': [
@@ -70,9 +90,13 @@
       'target_name': 'haybarn',
       'dependencies': [
         'fetch_libhaybarn',
+        'nanoarrow',
         '<!(node -p "require(\'node-addon-api\').targets"):node_addon_api_except_all',
       ],
-      'sources': ['src/duckdb_node_bindings.cpp'],
+      'sources': [
+        'src/arrow_ipc.cpp',
+        'src/duckdb_node_bindings.cpp',
+      ],
       'include_dirs': ['<(module_root_dir)/libhaybarn'],
       'conditions': [
         ['OS=="linux" and target_arch=="x64"', {
