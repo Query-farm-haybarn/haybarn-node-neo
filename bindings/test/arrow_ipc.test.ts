@@ -118,4 +118,70 @@ suite('Arrow IPC', () => {
       });
     });
   });
+
+  test('pulls bounded IPC chunks after native backpressure', async () => {
+    await withConnection(async (connection) => {
+      await duckdb.query(connection, 'SET arrow_lossless_conversion = true');
+      await duckdb.query(
+        connection,
+        "CREATE TYPE stream_mood AS ENUM ('sad', 'ok', 'happy')",
+      );
+      const result = await duckdb.query(
+        connection,
+        `SELECT i, ['sad', 'ok', 'happy'][1 + (i % 3)]::stream_mood AS mood
+        FROM range(5000) AS rows(i)`,
+      );
+      const stream = duckdb.result_arrow_ipc_stream(result, 1024, 257);
+
+      // Let the bounded queue fill before consuming it.
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      const chunks: Uint8Array[] = [];
+      while (true) {
+        const chunk = await duckdb.arrow_ipc_stream_next(stream);
+        if (chunk === null) {
+          break;
+        }
+        expect(chunk.byteLength).toBeLessThanOrEqual(257);
+        chunks.push(chunk);
+      }
+
+      expect(chunks.length).toBeGreaterThan(1);
+      const table = tableFromIPC(Buffer.concat(chunks));
+      expect(table.numRows).toBe(5000);
+      expect(table.batches).toHaveLength(3);
+      expect(table.schema.fields[1].type.toString()).toBe(
+        'Dictionary<Uint8, Utf8>',
+      );
+    });
+  });
+
+  test('cancels a producer blocked by a full queue', async () => {
+    await withConnection(async (connection) => {
+      const result = await duckdb.query(
+        connection,
+        "SELECT repeat('x', 1000) FROM range(10000)",
+      );
+      const stream = duckdb.result_arrow_ipc_stream(result, 64, 64);
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      duckdb.arrow_ipc_stream_cancel(stream);
+
+      await expect(duckdb.arrow_ipc_stream_next(stream)).resolves.toBeNull();
+    });
+  });
+
+  test('rejects concurrent reads from one IPC stream', async () => {
+    await withConnection(async (connection) => {
+      const result = await duckdb.query(connection, 'SELECT * FROM range(10)');
+      const stream = duckdb.result_arrow_ipc_stream(result);
+      const firstRead = duckdb.arrow_ipc_stream_next(stream);
+
+      expect(() => duckdb.arrow_ipc_stream_next(stream)).toThrow(
+        'An Arrow IPC stream read is already in progress',
+      );
+      expect(await firstRead).not.toBeNull();
+      duckdb.arrow_ipc_stream_cancel(stream);
+    });
+  });
 });

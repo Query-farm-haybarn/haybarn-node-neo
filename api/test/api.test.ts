@@ -2669,6 +2669,60 @@ ORDER BY name
     });
   });
 
+  test('stream Arrow IPC bytes with backpressure', async () => {
+    await withConnection(async (connection) => {
+      const result = await connection.stream(
+        "select i, repeat('x', 100) as value from range(5000) t(i)",
+      );
+      const stream = result.streamArrowIPC({
+        highWaterMark: 128,
+        nativeQueueSize: 512,
+        nativeChunkSize: 127,
+      });
+
+      // Exercise a producer pause before attaching a consumer.
+      await sleep(10);
+
+      const chunks: Buffer[] = [];
+      for await (const chunk of stream) {
+        assert.instanceOf(chunk, Buffer);
+        assert.isAtMost(chunk.byteLength, 127);
+        chunks.push(chunk);
+      }
+
+      const bytes = Buffer.concat(chunks);
+      assert.isAbove(chunks.length, 1);
+      assert.isAbove(bytes.byteLength, 500_000);
+      assert.strictEqual(bytes.readInt32LE(0), -1);
+      assert.deepEqual(
+        bytes.subarray(-8),
+        Buffer.from([255, 255, 255, 255, 0, 0, 0, 0]),
+      );
+    });
+  });
+
+  test('abort an Arrow IPC stream', async () => {
+    await withConnection(async (connection) => {
+      const result = await connection.stream(
+        "select repeat('x', 1000) from range(10000)",
+      );
+      const controller = new AbortController();
+      const stream = result.streamArrowIPC({
+        signal: controller.signal,
+        nativeQueueSize: 64,
+        nativeChunkSize: 64,
+      });
+      const streamError = new Promise<Error>((resolve) => {
+        stream.once('error', resolve);
+      });
+
+      controller.abort();
+
+      assert.strictEqual((await streamError).name, 'AbortError');
+      assert.isTrue(stream.destroyed);
+    });
+  });
+
   test('iterate stream of rows', async () => {
     await withConnection(async (connection) => {
       const result = await connection.stream(

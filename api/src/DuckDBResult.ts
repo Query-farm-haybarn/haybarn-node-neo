@@ -1,4 +1,5 @@
 import duckdb from '@haybarn/node-bindings';
+import { Readable } from 'node:stream';
 import { DuckDBDataChunk } from './DuckDBDataChunk';
 import { DuckDBLogicalType } from './DuckDBLogicalType';
 import { DuckDBType } from './DuckDBType';
@@ -18,6 +19,17 @@ import { getColumnsObjectFromChunks } from './getColumnsObjectFromChunks';
 import { getRowObjectsFromChunks } from './getRowObjectsFromChunks';
 import { getRowsFromChunks } from './getRowsFromChunks';
 import { DuckDBValue } from './values';
+
+export interface ArrowIPCStreamOptions {
+  /** Maximum bytes buffered by the Node.js Readable. */
+  highWaterMark?: number;
+  /** Abort the Readable and native producer when this signal fires. */
+  signal?: AbortSignal;
+  /** Maximum bytes queued by the native producer. Defaults to 1 MiB. */
+  nativeQueueSize?: number;
+  /** Maximum size of each emitted byte chunk. Defaults to 64 KiB. */
+  nativeChunkSize?: number;
+}
 
 export class DuckDBResult {
   protected readonly result: duckdb.Result;
@@ -139,6 +151,63 @@ export class DuckDBResult {
   /** Consume the remaining rows and encode them as buffered Arrow IPC stream-format bytes. */
   public async toArrowIPC(): Promise<Uint8Array> {
     return duckdb.result_to_arrow_ipc(this.result);
+  }
+
+  /** Consume the remaining rows as a backpressured Arrow IPC byte stream. */
+  public streamArrowIPC(options: ArrowIPCStreamOptions = {}): Readable {
+    const nativeStream = duckdb.result_arrow_ipc_stream(
+      this.result,
+      options.nativeQueueSize,
+      options.nativeChunkSize,
+    );
+    let reading = false;
+    let ended = false;
+
+    const readable = new Readable({
+      highWaterMark: options.highWaterMark,
+      signal: options.signal,
+      read() {
+        if (reading || ended) {
+          return;
+        }
+
+        reading = true;
+        void duckdb.arrow_ipc_stream_next(nativeStream).then(
+          (chunk) => {
+            reading = false;
+            if (ended) {
+              return;
+            }
+            if (chunk === null) {
+              ended = true;
+              this.push(null);
+              return;
+            }
+
+            if (this.push(chunk)) {
+              this.read(0);
+            }
+          },
+          (error: unknown) => {
+            reading = false;
+            if (!ended) {
+              this.destroy(
+                error instanceof Error ? error : new Error(String(error)),
+              );
+            }
+          },
+        );
+      },
+      destroy(error, callback) {
+        if (!ended) {
+          ended = true;
+          duckdb.arrow_ipc_stream_cancel(nativeStream);
+        }
+        callback(error);
+      },
+    });
+
+    return readable;
   }
 
   public async fetchChunk(): Promise<DuckDBDataChunk | null> {

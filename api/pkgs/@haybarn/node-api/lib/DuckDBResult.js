@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DuckDBResult = void 0;
 const node_bindings_1 = __importDefault(require("@haybarn/node-bindings"));
+const node_stream_1 = require("node:stream");
 const DuckDBDataChunk_1 = require("./DuckDBDataChunk");
 const DuckDBLogicalType_1 = require("./DuckDBLogicalType");
 const JSDuckDBValueConverter_1 = require("./JSDuckDBValueConverter");
@@ -113,6 +114,49 @@ class DuckDBResult {
     /** Consume the remaining rows and encode them as buffered Arrow IPC stream-format bytes. */
     async toArrowIPC() {
         return node_bindings_1.default.result_to_arrow_ipc(this.result);
+    }
+    /** Consume the remaining rows as a backpressured Arrow IPC byte stream. */
+    streamArrowIPC(options = {}) {
+        const nativeStream = node_bindings_1.default.result_arrow_ipc_stream(this.result, options.nativeQueueSize, options.nativeChunkSize);
+        let reading = false;
+        let ended = false;
+        const readable = new node_stream_1.Readable({
+            highWaterMark: options.highWaterMark,
+            signal: options.signal,
+            read() {
+                if (reading || ended) {
+                    return;
+                }
+                reading = true;
+                void node_bindings_1.default.arrow_ipc_stream_next(nativeStream).then((chunk) => {
+                    reading = false;
+                    if (ended) {
+                        return;
+                    }
+                    if (chunk === null) {
+                        ended = true;
+                        this.push(null);
+                        return;
+                    }
+                    if (this.push(chunk)) {
+                        this.read(0);
+                    }
+                }, (error) => {
+                    reading = false;
+                    if (!ended) {
+                        this.destroy(error instanceof Error ? error : new Error(String(error)));
+                    }
+                });
+            },
+            destroy(error, callback) {
+                if (!ended) {
+                    ended = true;
+                    node_bindings_1.default.arrow_ipc_stream_cancel(nativeStream);
+                }
+                callback(error);
+            },
+        });
+        return readable;
     }
     async fetchChunk() {
         const chunk = await node_bindings_1.default.fetch_chunk(this.result);

@@ -649,6 +649,10 @@ static const napi_type_tag ResultTypeTag = {
   0x08F7FE3AE12345E5, 0x8733310DC29372D9
 };
 
+static const napi_type_tag ArrowIpcStreamTypeTag = {
+  0x9FBB6F23B8E74BE2, 0xA2B465117C64C79D
+};
+
 void FinalizeResult(Napi::BasicEnv, duckdb_result *result_ptr) {
   if (result_ptr) {
     duckdb_destroy_result(result_ptr);
@@ -663,6 +667,38 @@ Napi::External<duckdb_result> CreateExternalForResult(Napi::Env env, duckdb_resu
 
 duckdb_result *GetResultFromExternal(Napi::Env env, Napi::Value value) {
   return GetDataFromExternal<duckdb_result>(env, ResultTypeTag, value, "Invalid result argument");
+}
+
+struct ArrowIpcStreamHolder {
+  ArrowIpcStreamHolder(Napi::Value result_value,
+                       HayBarnArrowIpcStream* stream)
+      : result_value_ref(MakeValueRef(result_value)), stream(stream) {}
+
+  Napi::Reference<Napi::Value> result_value_ref;
+  HayBarnArrowIpcStream* stream;
+};
+
+void FinalizeArrowIpcStreamHolder(Napi::BasicEnv,
+                                  ArrowIpcStreamHolder* holder) {
+  if (holder != nullptr) {
+    HayBarnArrowIpcStreamDestroy(holder->stream);
+    delete holder;
+  }
+}
+
+Napi::External<ArrowIpcStreamHolder> CreateExternalForArrowIpcStream(
+    Napi::Env env, Napi::Value result_value, HayBarnArrowIpcStream* stream) {
+  auto holder = std::make_unique<ArrowIpcStreamHolder>(result_value, stream);
+  auto external = CreateExternal<ArrowIpcStreamHolder>(
+      env, ArrowIpcStreamTypeTag, holder.get(), FinalizeArrowIpcStreamHolder);
+  holder.release();
+  return external;
+}
+
+ArrowIpcStreamHolder* GetArrowIpcStreamHolderFromExternal(
+    Napi::Env env, Napi::Value value) {
+  return GetDataFromExternal<ArrowIpcStreamHolder>(
+      env, ArrowIpcStreamTypeTag, value, "Invalid Arrow IPC stream argument");
 }
 
 static const napi_type_tag ScalarFunctionTypeTag = {
@@ -1485,6 +1521,56 @@ private:
 
 };
 
+class ArrowIpcStreamNextWorker : public PromiseWorker {
+
+public:
+
+  ArrowIpcStreamNextWorker(Napi::Env env, Napi::Value streamValue,
+                           HayBarnArrowIpcStream* stream)
+    : PromiseWorker(env),
+    stream_(stream),
+    streamValueRef_(MakeValueRef(streamValue))
+  {
+  }
+
+protected:
+
+  void Execute() override {
+    std::string error;
+    const ArrowErrorCode result =
+      HayBarnArrowIpcStreamNext(stream_, &chunk_, &done_, &error);
+    if (result != NANOARROW_OK) {
+      SetError(error.empty() ? "Failed to read Arrow IPC stream" : error);
+    }
+  }
+
+  Napi::Value Result() override {
+    if (done_) {
+      return Env().Null();
+    }
+    return Napi::Buffer<uint8_t>::NewOrCopy(Env(), chunk_.data(),
+                                            chunk_.size());
+  }
+
+  void OnOK() override {
+    HayBarnArrowIpcStreamEndNext(stream_);
+    PromiseWorker::OnOK();
+  }
+
+  void OnError(const Napi::Error& error) override {
+    HayBarnArrowIpcStreamEndNext(stream_);
+    PromiseWorker::OnError(error);
+  }
+
+private:
+
+  HayBarnArrowIpcStream* stream_;
+  Napi::Reference<Napi::Value> streamValueRef_;
+  std::vector<uint8_t> chunk_;
+  bool done_ = false;
+
+};
+
 // Enums
 
 void DefineEnumMember(Napi::Object enumObj, const char *key, uint32_t value) {
@@ -1635,6 +1721,9 @@ public:
       InstanceMethod("result_chunk_count", &DuckDBNodeAddon::result_chunk_count),
       InstanceMethod("result_return_type", &DuckDBNodeAddon::result_return_type),
       InstanceMethod("result_to_arrow_ipc", &DuckDBNodeAddon::result_to_arrow_ipc),
+      InstanceMethod("result_arrow_ipc_stream", &DuckDBNodeAddon::result_arrow_ipc_stream),
+      InstanceMethod("arrow_ipc_stream_next", &DuckDBNodeAddon::arrow_ipc_stream_next),
+      InstanceMethod("arrow_ipc_stream_cancel", &DuckDBNodeAddon::arrow_ipc_stream_cancel),
 
       InstanceMethod("vector_size", &DuckDBNodeAddon::vector_size),
 
@@ -2268,6 +2357,67 @@ private:
     auto worker = new ResultToArrowIpcStreamWorker(env, resultValue);
     worker->Queue();
     return worker->Promise();
+  }
+
+  // function result_arrow_ipc_stream(result: Result, maxQueueBytes?: number,
+  //                                  maxChunkBytes?: number): ArrowIpcStream
+  Napi::Value result_arrow_ipc_stream(const Napi::CallbackInfo& info) {
+    auto env = info.Env();
+    auto result_value = info[0];
+    auto result_ptr = GetResultFromExternal(env, result_value);
+    int64_t max_queue_bytes = 1024 * 1024;
+    int64_t max_chunk_bytes = 64 * 1024;
+    if (info.Length() > 1 && !info[1].IsUndefined()) {
+      max_queue_bytes = info[1].As<Napi::Number>().Int64Value();
+    }
+    if (info.Length() > 2 && !info[2].IsUndefined()) {
+      max_chunk_bytes = info[2].As<Napi::Number>().Int64Value();
+    }
+    if (max_queue_bytes <= 0 || max_chunk_bytes <= 0) {
+      throw Napi::RangeError::New(
+          env, "Arrow IPC stream queue and chunk sizes must be positive");
+    }
+
+    auto* stream = HayBarnArrowIpcStreamCreate(
+        result_ptr, max_queue_bytes, max_chunk_bytes);
+    if (stream == nullptr) {
+      throw Napi::Error::New(env, "Failed to create Arrow IPC stream");
+    }
+
+    if (HayBarnArrowIpcStreamStart(stream) != NANOARROW_OK) {
+      HayBarnArrowIpcStreamDestroy(stream);
+      throw Napi::Error::New(env, "Failed to start Arrow IPC producer thread");
+    }
+
+    try {
+      return CreateExternalForArrowIpcStream(env, result_value, stream);
+    } catch (...) {
+      HayBarnArrowIpcStreamDestroy(stream);
+      throw;
+    }
+  }
+
+  // function arrow_ipc_stream_next(stream: ArrowIpcStream): Promise<Uint8Array | null>
+  Napi::Value arrow_ipc_stream_next(const Napi::CallbackInfo& info) {
+    auto env = info.Env();
+    auto stream_value = info[0];
+    auto* holder = GetArrowIpcStreamHolderFromExternal(env, stream_value);
+    if (!HayBarnArrowIpcStreamBeginNext(holder->stream)) {
+      throw Napi::Error::New(
+          env, "An Arrow IPC stream read is already in progress");
+    }
+    auto* worker = new ArrowIpcStreamNextWorker(
+        env, stream_value, holder->stream);
+    worker->Queue();
+    return worker->Promise();
+  }
+
+  // function arrow_ipc_stream_cancel(stream: ArrowIpcStream): void
+  Napi::Value arrow_ipc_stream_cancel(const Napi::CallbackInfo& info) {
+    auto env = info.Env();
+    auto* holder = GetArrowIpcStreamHolderFromExternal(env, info[0]);
+    HayBarnArrowIpcStreamCancel(holder->stream);
+    return env.Undefined();
   }
 
   // #ifndef DUCKDB_API_NO_DEPRECATED

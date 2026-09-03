@@ -408,6 +408,28 @@ export function result_return_type(result: Result): ResultType;
  */
 export function result_to_arrow_ipc(result: Result): Promise<Uint8Array>;
 
+/** Opaque handle for a bounded native Arrow IPC byte stream. */
+export interface ArrowIpcStream {
+  readonly __arrowIpcStreamBrand: never;
+}
+
+/**
+ * Start consuming a result on a dedicated native producer thread.
+ */
+export function result_arrow_ipc_stream(
+  result: Result,
+  maxQueueBytes?: number,
+  maxChunkBytes?: number,
+): ArrowIpcStream;
+
+/** Read the next byte chunk, or null after the stream ends. */
+export function arrow_ipc_stream_next(
+  stream: ArrowIpcStream,
+): Promise<Uint8Array | null>;
+
+/** Stop producing bytes and discard queued output. */
+export function arrow_ipc_stream_cancel(stream: ArrowIpcStream): void;
+
 // #ifndef DUCKDB_API_NO_DEPRECATED
 // DUCKDB_C_API bool duckdb_value_boolean(duckdb_result *result, idx_t col, idx_t row);
 // DUCKDB_C_API int8_t duckdb_value_int8(duckdb_result *result, idx_t col, idx_t row);

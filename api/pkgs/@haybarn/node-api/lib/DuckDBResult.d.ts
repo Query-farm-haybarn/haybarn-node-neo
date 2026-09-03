@@ -1,4 +1,5 @@
 import duckdb from '@haybarn/node-bindings';
+import { Readable } from 'node:stream';
 import { DuckDBDataChunk } from './DuckDBDataChunk';
 import { DuckDBLogicalType } from './DuckDBLogicalType';
 import { DuckDBType } from './DuckDBType';
@@ -8,6 +9,16 @@ import { JS } from './JS';
 import { Json } from './Json';
 import { ResultReturnType, StatementType } from './enums';
 import { DuckDBValue } from './values';
+export interface ArrowIPCStreamOptions {
+    /** Maximum bytes buffered by the Node.js Readable. */
+    highWaterMark?: number;
+    /** Abort the Readable and native producer when this signal fires. */
+    signal?: AbortSignal;
+    /** Maximum bytes queued by the native producer. Defaults to 1 MiB. */
+    nativeQueueSize?: number;
+    /** Maximum size of each emitted byte chunk. Defaults to 64 KiB. */
+    nativeChunkSize?: number;
+}
 export declare class DuckDBResult {
     protected readonly result: duckdb.Result;
     constructor(result: duckdb.Result);
@@ -29,6 +40,8 @@ export declare class DuckDBResult {
     get rowsChanged(): number;
     /** Consume the remaining rows and encode them as buffered Arrow IPC stream-format bytes. */
     toArrowIPC(): Promise<Uint8Array>;
+    /** Consume the remaining rows as a backpressured Arrow IPC byte stream. */
+    streamArrowIPC(options?: ArrowIPCStreamOptions): Readable;
     fetchChunk(): Promise<DuckDBDataChunk | null>;
     fetchAllChunks(): Promise<DuckDBDataChunk[]>;
     getColumns(): Promise<DuckDBValue[][]>;
