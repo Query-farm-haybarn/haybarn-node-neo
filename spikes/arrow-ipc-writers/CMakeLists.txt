@@ -24,7 +24,7 @@ if(SPIKE_BUILD_NANOARROW)
   FetchContent_Declare(
     nanoarrow
     GIT_REPOSITORY https://github.com/Query-farm/arrow-nanoarrow.git
-    GIT_TAG de091e0a7d2d8906457ce71d4042fc9111d94c00
+    GIT_TAG 9367abbdfa5a4b8082b5d7abec64113c57eab27e
   )
   FetchContent_MakeAvailable(nanoarrow)
 endif()

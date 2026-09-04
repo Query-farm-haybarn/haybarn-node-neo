@@ -2,7 +2,10 @@
 
 This directory contains the bundled nanoarrow C Data and IPC implementation
 generated from Query-farm/arrow-nanoarrow commit
-`de091e0a7d2d8906457ce71d4042fc9111d94c00`.
+`9367abbdfa5a4b8082b5d7abec64113c57eab27e` on the
+`integration/haybarn-arrow-ipc` branch. This revision combines the dictionary
+writer from apache/arrow-nanoarrow#928 with the finalized array-view appender
+from apache/arrow-nanoarrow#930 on top of upstream `main`.
 
 The bundle was generated with nanoarrow's `ci/scripts/bundle.py`:
 

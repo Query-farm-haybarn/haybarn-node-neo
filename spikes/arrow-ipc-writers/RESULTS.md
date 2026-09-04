@@ -9,9 +9,9 @@ widths, and produced values and schemas identical to Arrow C++ when decoded by
 PyArrow.
 
 Keep the dependency pinned to the immutable integration commit during
-development. The functionality is being split into independently reviewed
-upstream changes, so the fork commit should not become the long-term release
-dependency.
+development. It combines the independently reviewed dictionary writer and
+array-view appender changes, so the fork commit should not become the
+long-term release dependency after both changes are available upstream.
 
 ## Results
 
@@ -40,8 +40,8 @@ by all batches.
   Data implementation are narrowly scoped.
 - nanoarrow can be compiled into the addon without introducing an Arrow C++
   runtime dependency.
-- The integration commit is larger than the eventual writer-only dependency
-  because it also contains delta decoding and the array-view appender.
+- The integration commit includes the separately reviewed array-view appender
+  used by the dictionary writer.
 
 ## Integration shape
 
@@ -57,12 +57,12 @@ to keep the comparison small. Production code should use HayBarn's current
 binding's existing result chunks and preserve the binding's Arrow conversion
 options.
 
-## Remaining validation
+## Binding validation
 
-- Decode the generated stream with Apache Arrow JS in a binding-level test.
-- Add the nanoarrow C sources and headers to the cross-platform node-gyp build.
-- Decide whether a later API also exposes incremental chunks or writes to a
-  file. Large exports should not permanently require one giant JavaScript
-  allocation.
-- Add binding-level tests for cancellation, write failures, empty results,
-  dictionary columns, and Electron packaging/signing.
+- Binding tests decode generated streams with Apache Arrow JS and cover empty
+  results, multi-batch dictionaries, bounded incremental chunks, cancellation,
+  and concurrent-read rejection.
+- The public API exposes both buffered bytes and a backpressured Node.js
+  `Readable`.
+- Cross-platform CI covers the vendored nanoarrow sources in the node-gyp
+  build. Electron packaging/signing remains separate release validation.

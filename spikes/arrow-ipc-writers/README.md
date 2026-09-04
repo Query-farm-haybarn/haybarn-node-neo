@@ -9,7 +9,9 @@ Interface result:
 Both execute the same broad type fixture with lossless Arrow conversion
 enabled, write an Arrow IPC stream, and compare schemas, extension metadata,
 and values with PyArrow. The nanoarrow writer is pinned to the Query-farm
-integration commit containing dictionary batch writing and delta support.
+integration commit combining the dictionary writer from
+apache/arrow-nanoarrow#928 and the array-view appender from
+apache/arrow-nanoarrow#930 on the current upstream `main`.
 HayBarn exports `ENUM` columns using Arrow dictionary encoding, so the
 unmodified `test_all_types()` fixture exercises dictionary IPC messages.
 

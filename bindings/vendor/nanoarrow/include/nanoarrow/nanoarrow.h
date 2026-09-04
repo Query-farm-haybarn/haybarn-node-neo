@@ -1217,6 +1217,8 @@ static inline void ArrowDecimalSetBytes(struct ArrowDecimal* decimal,
   NANOARROW_SYMBOL(NANOARROW_NAMESPACE, ArrowArraySetValidityBitmap)
 #define ArrowArraySetBuffer NANOARROW_SYMBOL(NANOARROW_NAMESPACE, ArrowArraySetBuffer)
 #define ArrowArrayReserve NANOARROW_SYMBOL(NANOARROW_NAMESPACE, ArrowArrayReserve)
+#define ArrowArrayAppendStorageFromArrayView \
+  NANOARROW_SYMBOL(NANOARROW_NAMESPACE, ArrowArrayAppendStorageFromArrayView)
 #define ArrowArrayFinishBuilding \
   NANOARROW_SYMBOL(NANOARROW_NAMESPACE, ArrowArrayFinishBuilding)
 #define ArrowArrayFinishBuildingDefault \
@@ -2126,6 +2128,17 @@ static inline ArrowErrorCode ArrowArrayStartAppending(struct ArrowArray* array);
 /// that occur using the item-wise appenders.
 NANOARROW_DLL ArrowErrorCode ArrowArrayReserve(struct ArrowArray* array,
                                                int64_t additional_size_elements);
+
+/// \brief Append storage from an ArrowArrayView to an ArrowArray
+///
+/// Appends each logical storage element of array_view to array. array must have
+/// been initialized with compatible storage and prepared using
+/// ArrowArrayStartAppending(). Dictionary values referenced by array_view are
+/// not copied; dictionary-encoded inputs require a dictionary-encoded output.
+/// Returns EINVAL for incompatible storage and ENOTSUP for unsupported storage.
+NANOARROW_DLL ArrowErrorCode ArrowArrayAppendStorageFromArrayView(
+    struct ArrowArray* array, const struct ArrowArrayView* array_view,
+    struct ArrowError* error);
 
 /// \brief Append a null value to an array
 static inline ArrowErrorCode ArrowArrayAppendNull(struct ArrowArray* array, int64_t n);
@@ -3136,6 +3149,10 @@ static inline void ArrowBitmapAppendInt8Unsafe(struct ArrowBitmap* bitmap,
   // First byte
   if ((out_i_cursor % 8) != 0) {
     int64_t n_partial_bits = _ArrowRoundUpToMultipleOf8(out_i_cursor) - out_i_cursor;
+    if (n_partial_bits > n_remaining) {
+      n_partial_bits = n_remaining;
+    }
+
     for (int i = 0; i < n_partial_bits; i++) {
       ArrowBitSetTo(bitmap->buffer.data, out_i_cursor++, values[i]);
     }
@@ -3186,6 +3203,10 @@ static inline void ArrowBitmapAppendInt32Unsafe(struct ArrowBitmap* bitmap,
   // First byte
   if ((out_i_cursor % 8) != 0) {
     int64_t n_partial_bits = _ArrowRoundUpToMultipleOf8(out_i_cursor) - out_i_cursor;
+    if (n_partial_bits > n_remaining) {
+      n_partial_bits = n_remaining;
+    }
+
     for (int i = 0; i < n_partial_bits; i++) {
       ArrowBitSetTo(bitmap->buffer.data, out_i_cursor++, (uint8_t)values[i]);
     }
