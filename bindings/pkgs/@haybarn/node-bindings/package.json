@@ -2,6 +2,7 @@
   "name": "@haybarn/node-bindings",
   "version": "1.5.6-rc1",
   "license": "MIT",
+  "homepage": "https://query.farm/products/haybarn/",
   "main": "./haybarn.js",
   "types": "./haybarn.d.ts",
   "dependencies": {

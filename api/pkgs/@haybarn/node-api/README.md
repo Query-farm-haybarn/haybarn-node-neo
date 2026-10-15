@@ -1,6 +1,13 @@
+<p align="center">
+  <a href="https://query.farm/products/haybarn/"><img src="https://raw.githubusercontent.com/Query-farm-haybarn/.github/haybarn/profile/assets/haybarn-icon.png" alt="Haybarn" width="120" height="120"></a>
+</p>
+<p align="center">
+  <a href="https://query.farm"><img src="https://query.farm/media-kit/logo/wordmark-light.png" alt="Query.Farm" height="28"></a>
+</p>
+
 # Haybarn Node API
 
-A high-level Node API for [Haybarn](https://github.com/Query-farm-haybarn/haybarn),
+A high-level Node API for [Haybarn](https://query.farm/products/haybarn/),
 a derived distribution of [DuckDB](https://duckdb.org/) (powered by DuckDB),
 published by Query Farm LLC.
 
