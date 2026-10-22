@@ -1,4 +1,4 @@
-import type duckdb from '@duckdb/node-bindings';
+import type duckdb from '@haybarn/node-bindings';
 import type { DuckDBType } from '../DuckDBType';
 import type { DuckDBValue } from '../values';
 import type { DuckDBVector } from './DuckDBVector';

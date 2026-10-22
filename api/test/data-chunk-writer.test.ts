@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest';
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import {
   DuckDBConnection,
   DuckDBDataChunk,

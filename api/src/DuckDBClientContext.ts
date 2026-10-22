@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 
 export class DuckDBClientContext {
   private readonly client_context: duckdb.ClientContext;

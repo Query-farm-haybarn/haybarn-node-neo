@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { expect, suite, test } from 'vitest';
 
 // A created vector owns its memory, unlike one belonging to a data chunk, and is

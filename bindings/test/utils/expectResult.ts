@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { expect } from 'vitest';
 import { expectChunk } from './expectChunk';
 import { ExpectedResult } from './ExpectedResult';

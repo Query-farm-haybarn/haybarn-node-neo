@@ -10,7 +10,7 @@
 // Run as: node scalarFunctionExit.cjs <scenario>, with the bindings package
 // resolvable from the working directory.
 
-const duckdb = require('@duckdb/node-bindings');
+const duckdb = require('@haybarn/node-bindings');
 
 const scenario = process.argv[2];
 

@@ -1,4 +1,4 @@
-import duckdb, { TimestampNanoseconds } from '@duckdb/node-bindings';
+import duckdb, { TimestampNanoseconds } from '@haybarn/node-bindings';
 import { getDuckDBTimestampStringFromNanoseconds } from '../conversion/dateTimeStringConversion';
 
 export class DuckDBTimestampNanosecondsValue implements TimestampNanoseconds {

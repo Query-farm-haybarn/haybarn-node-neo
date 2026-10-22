@@ -1,4 +1,4 @@
-import duckdb, { Time, TimeParts } from '@duckdb/node-bindings';
+import duckdb, { Time, TimeParts } from '@haybarn/node-bindings';
 import { getDuckDBTimeStringFromMicrosecondsInDay } from '../conversion/dateTimeStringConversion';
 
 export type { TimeParts };

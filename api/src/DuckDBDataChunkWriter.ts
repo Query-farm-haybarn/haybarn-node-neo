@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import type { DuckDBAppender } from './DuckDBAppender';
 import { DuckDBDataChunk } from './DuckDBDataChunk';
 import { DuckDBType } from './DuckDBType';

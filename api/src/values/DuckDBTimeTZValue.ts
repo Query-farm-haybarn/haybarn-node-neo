@@ -1,4 +1,4 @@
-import duckdb, { TimeTZ, TimeTZParts } from '@duckdb/node-bindings';
+import duckdb, { TimeTZ, TimeTZParts } from '@haybarn/node-bindings';
 import {
   getDuckDBTimeStringFromMicrosecondsInDay,
   getOffsetStringFromSeconds

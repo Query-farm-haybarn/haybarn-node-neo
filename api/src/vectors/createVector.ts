@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { DuckDBLogicalType } from '../DuckDBLogicalType';
 import {
   DuckDBArrayType,

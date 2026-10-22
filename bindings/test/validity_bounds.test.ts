@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { expect, suite, test } from 'vitest';
 
 // The C API takes a validity mask as a bare pointer and indexes into it

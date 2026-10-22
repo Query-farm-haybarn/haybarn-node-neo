@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { expect } from 'vitest';
 import { ExpectedLogicalType } from './ExpectedLogicalType';
 import { UTINYINT } from './expectedLogicalTypes';

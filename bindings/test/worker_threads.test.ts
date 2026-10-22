@@ -21,7 +21,7 @@ import { expect, suite, test } from 'vitest';
 // distinction that matters.
 
 const bindings_path = createRequire(import.meta.url).resolve(
-  '@duckdb/node-bindings',
+  '@haybarn/node-bindings',
 );
 
 const worker_count = 4;

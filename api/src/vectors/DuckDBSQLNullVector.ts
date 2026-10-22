@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { DuckDBSQLNullType } from '../DuckDBType';
 import { DuckDBVector } from './DuckDBVector';
 import { DuckDBValidity } from './DuckDBValidity';

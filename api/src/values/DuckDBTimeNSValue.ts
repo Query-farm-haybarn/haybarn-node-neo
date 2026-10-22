@@ -1,4 +1,4 @@
-import { TimeNS } from '@duckdb/node-bindings';
+import { TimeNS } from '@haybarn/node-bindings';
 import { getDuckDBTimeStringFromNanosecondsInDay } from '../conversion/dateTimeStringConversion';
 
 export class DuckDBTimeNSValue implements TimeNS {
