@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 
 export class DuckDBScalarFunctionInfo {
   private readonly function_info: duckdb.ScalarFunctionInfo;

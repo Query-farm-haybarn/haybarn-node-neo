@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { expect, suite, test } from 'vitest';
 
 // An index past the end reaches the C API three different ways. Most report it

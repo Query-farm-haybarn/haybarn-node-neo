@@ -1,2 +1,2 @@
-pkgs/@duckdb/node-api/lib
+pkgs/@haybarn/node-api/lib
 test/tsconfig.tsbuildinfo

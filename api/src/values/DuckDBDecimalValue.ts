@@ -1,4 +1,4 @@
-import duckdb, { Decimal } from '@duckdb/node-bindings';
+import duckdb, { Decimal } from '@haybarn/node-bindings';
 import { stringFromDecimal } from '../conversion/stringFromDecimal';
 
 export class DuckDBDecimalValue implements Decimal {

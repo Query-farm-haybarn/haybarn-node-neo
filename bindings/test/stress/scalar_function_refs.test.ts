@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import v8 from 'node:v8';
 import vm from 'node:vm';
 import { expect, suite, test } from 'vitest';

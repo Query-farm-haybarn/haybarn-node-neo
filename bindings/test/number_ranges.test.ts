@@ -2,7 +2,7 @@ import duckdb, {
   Appender,
   PreparedStatement,
   Value,
-} from '@duckdb/node-bindings';
+} from '@haybarn/node-bindings';
 import { expect, suite, test } from 'vitest';
 import { withConnection } from './utils/withConnection';
 

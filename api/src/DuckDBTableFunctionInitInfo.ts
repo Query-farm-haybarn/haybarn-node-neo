@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 
 export class DuckDBTableFunctionInitInfo {
   private readonly init_info: duckdb.TableFunctionInitInfo;

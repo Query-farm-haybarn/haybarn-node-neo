@@ -1,4 +1,4 @@
-import duckdb, { TimestampSeconds } from '@duckdb/node-bindings';
+import duckdb, { TimestampSeconds } from '@haybarn/node-bindings';
 import { getDuckDBTimestampStringFromSeconds } from '../conversion/dateTimeStringConversion';
 
 export class DuckDBTimestampSecondsValue implements TimestampSeconds {

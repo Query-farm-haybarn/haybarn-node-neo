@@ -109,7 +109,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/libduckdb/libduckdb.so'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-linux-x64<(libc_pkg_suffix)',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-linux-x64<(libc_pkg_suffix)',
             },
           ],
         }],
@@ -124,7 +124,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/libduckdb/libduckdb.so'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-linux-arm64<(libc_pkg_suffix)',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-linux-arm64<(libc_pkg_suffix)',
             },
           ],
         }],
@@ -143,7 +143,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/libduckdb/libduckdb.dylib'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-darwin-arm64',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-arm64',
             },
           ],
         }],
@@ -162,7 +162,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/libduckdb/libduckdb.dylib'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-darwin-x64',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-x64',
             },
           ],
         }],
@@ -175,7 +175,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/libduckdb/duckdb.dll'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-win32-arm64',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-arm64',
             },
           ],
         }],
@@ -188,7 +188,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/libduckdb/duckdb.dll'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-win32-x64',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-x64',
             },
           ],
         }],
@@ -203,7 +203,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/build/Release/duckdb.node'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-linux-x64<(libc_pkg_suffix)',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-linux-x64<(libc_pkg_suffix)',
             },
           ],
         }],
@@ -211,7 +211,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/build/Release/duckdb.node'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-linux-arm64<(libc_pkg_suffix)',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-linux-arm64<(libc_pkg_suffix)',
             },
           ],
         }],
@@ -219,7 +219,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/build/Release/duckdb.node'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-darwin-arm64',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-arm64',
             },
           ],
         }],
@@ -227,7 +227,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/build/Release/duckdb.node'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-darwin-x64',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-x64',
             },
           ],
         }],
@@ -235,7 +235,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/build/Release/duckdb.node'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-win32-arm64',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-arm64',
             },
           ],
         }],
@@ -243,7 +243,7 @@
           'copies': [
             {
               'files': ['<(module_root_dir)/build/Release/duckdb.node'],
-              'destination': '<(module_root_dir)/pkgs/@duckdb/node-bindings-win32-x64',
+              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-x64',
             },
           ],
         }],

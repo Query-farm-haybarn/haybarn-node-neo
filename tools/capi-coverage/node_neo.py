@@ -17,7 +17,7 @@ root = os.path.join(os.path.dirname(__file__), "..", "..")
 
 cpp_path = os.path.join(root, "bindings", "src", "duckdb_node_bindings.cpp")
 dts_path = os.path.join(
-  root, "bindings", "pkgs", "@duckdb", "node-bindings", "duckdb.d.ts"
+  root, "bindings", "pkgs", "@haybarn", "node-bindings", "duckdb.d.ts"
 )
 api_src_dir = os.path.join(root, "api", "src")
 
@@ -124,7 +124,7 @@ def node_neo_coverage():
   api_text = read_api_sources()
   used = set(re.findall(r"\bduckdb\.([a-z0-9_]+)\s*\(", api_text))
   for match in re.finditer(
-    r"export\s*\{([^}]*)\}\s*from\s*'@duckdb/node-bindings'", api_text, re.S
+    r"export\s*\{([^}]*)\}\s*from\s*'@haybarn/node-bindings'", api_text, re.S
   ):
     used.update(re.findall(r"[a-z0-9_]+", match.group(1)))
 

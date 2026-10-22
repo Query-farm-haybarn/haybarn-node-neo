@@ -1,4 +1,4 @@
-import duckdb, { Timestamp, TimestampParts } from '@duckdb/node-bindings';
+import duckdb, { Timestamp, TimestampParts } from '@haybarn/node-bindings';
 import { getDuckDBTimestampStringFromMicroseconds } from '../conversion/dateTimeStringConversion';
 import { DuckDBTimestampMillisecondsValue } from './DuckDBTimestampMillisecondsValue';
 

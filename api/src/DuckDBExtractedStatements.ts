@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { DuckDBPreparedStatement } from './DuckDBPreparedStatement';
 import { DuckDBPreparedStatementCollection } from './DuckDBPreparedStatementCollection';
 

@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 
 // This version of DuckDBValidity is almost 10x slower.
 // class DuckDBValidity {

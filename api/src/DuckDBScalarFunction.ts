@@ -1,4 +1,4 @@
-import duckdb from '@duckdb/node-bindings';
+import duckdb from '@haybarn/node-bindings';
 import { DuckDBDataChunk } from './DuckDBDataChunk';
 import { DuckDBScalarFunctionBindInfo } from './DuckDBScalarFunctionBindInfo';
 import { DuckDBScalarFunctionInfo } from './DuckDBScalarFunctionInfo';
