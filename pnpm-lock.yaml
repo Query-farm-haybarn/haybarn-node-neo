@@ -86,9 +86,6 @@ importers:
       '@haybarn/node-bindings-linux-x64-musl':
         specifier: workspace:*
         version: link:../node-bindings-linux-x64-musl
-      '@haybarn/node-bindings-win32-arm64':
-        specifier: workspace:*
-        version: link:../node-bindings-win32-arm64
       '@haybarn/node-bindings-win32-x64':
         specifier: workspace:*
         version: link:../node-bindings-win32-x64
