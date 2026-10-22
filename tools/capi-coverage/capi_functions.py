@@ -1,4 +1,4 @@
-"""Extract the canonical DUCKDB_C_API function list from bindings/libduckdb/duckdb.h.
+"""Extract the canonical DUCKDB_C_API function list from bindings/libhaybarn/duckdb.h.
 
 This is the source of truth every client is measured against. Yields one entry per
 function, carrying the group it sits in and whether the C API marks it deprecated.
@@ -8,7 +8,7 @@ import os
 import re
 
 header_path = os.path.join(
-  os.path.dirname(__file__), "..", "..", "bindings", "libduckdb", "duckdb.h"
+  os.path.dirname(__file__), "..", "..", "bindings", "libhaybarn", "duckdb.h"
 )
 
 # //===--------------------------------------------------------------------===//

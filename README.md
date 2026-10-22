@@ -67,7 +67,7 @@ Change version in:
 ### Upgrade DuckDB Version
 
 Change version in:
-- `bindings/scripts/fetch_libduckdb.py` (`base_url`)
+- `bindings/scripts/fetch_libhaybarn.py` (`base_url`)
 - `bindings/test/constants.test.ts`
 
 Update the setting count and flag names in
@@ -79,7 +79,7 @@ Also change DuckDB version in package versions.
 
 - `node scripts/checkFunctionSignatures.mjs [writeFiles]`
 
-Checks for differences between the function signatures in `duckdb.h` and those declared in `duckdb.d.ts` and implemented in `duckdb_node_bindings.cpp`.
+Checks for differences between the function signatures in `duckdb.h` and those declared in `haybarn.d.ts` and implemented in `duckdb_node_bindings.cpp`.
 
 Optionally outputs JSON files that can be diff'd.
 

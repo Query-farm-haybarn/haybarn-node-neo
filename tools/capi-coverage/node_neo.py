@@ -1,6 +1,6 @@
 """Parse Node Neo's own C API accounting.
 
-Both duckdb_node_bindings.cpp and duckdb.d.ts carry one comment block per C API
+Both duckdb_node_bindings.cpp and haybarn.d.ts carry one comment block per C API
 function:
 
     // DUCKDB_C_API <declaration>
@@ -17,7 +17,7 @@ root = os.path.join(os.path.dirname(__file__), "..", "..")
 
 cpp_path = os.path.join(root, "bindings", "src", "duckdb_node_bindings.cpp")
 dts_path = os.path.join(
-  root, "bindings", "pkgs", "@haybarn", "node-bindings", "duckdb.d.ts"
+  root, "bindings", "pkgs", "@haybarn", "node-bindings", "haybarn.d.ts"
 )
 api_src_dir = os.path.join(root, "api", "src")
 
@@ -146,7 +146,7 @@ def consistency_report():
     if "cpp" not in per_file:
       issues.append(name + ": missing from duckdb_node_bindings.cpp")
     elif "dts" not in per_file:
-      issues.append(name + ": missing from duckdb.d.ts")
+      issues.append(name + ": missing from haybarn.d.ts")
     elif per_file["cpp"][0] != per_file["dts"][0]:
       issues.append(
         name
