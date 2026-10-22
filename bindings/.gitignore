@@ -1,5 +1,5 @@
 build
-libduckdb
+libhaybarn
 pkgs/**/*.node
 pkgs/**/*.so
 pkgs/**/*.so.*

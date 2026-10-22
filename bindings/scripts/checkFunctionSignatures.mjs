@@ -13,7 +13,7 @@ function getFunctionSignaturesFromHeader(headerFilePath) {
   // `#if (DUCKDB_API_VERSION_BELOW(x, y, z) || DUCKDB_API_ALLOW_DEPRECATED)`,
   // optionally ANDed with a DUCKDB_API_VERSION_AT_LEAST clause. Both are recognized
   // and both stamp the legacy name, so the `// #ifndef DUCKDB_API_NO_DEPRECATED`
-  // markers in duckdb.d.ts and duckdb_node_bindings.cpp keep matching across the
+  // markers in haybarn.d.ts and duckdb_node_bindings.cpp keep matching across the
   // 2.0 upgrade without being rewritten.
   //
   // The negative lookahead skips the preamble that *sets* the switch
@@ -66,8 +66,8 @@ function checkFunctionSignatures() {
       return;
     }
 
-    const headerFilePath = path.join('libduckdb', 'duckdb.h');
-    const typeDefsFilePath = path.join('pkgs', '@haybarn', 'node-bindings', 'duckdb.d.ts');
+    const headerFilePath = path.join('libhaybarn', 'duckdb.h');
+    const typeDefsFilePath = path.join('pkgs', '@haybarn', 'node-bindings', 'haybarn.d.ts');
     const bindingsFilePath = path.join('src', 'duckdb_node_bindings.cpp');
 
     const headerSigs = getFunctionSignaturesFromHeader(headerFilePath);
