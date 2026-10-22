@@ -123,9 +123,6 @@ rolling forward the Haybarn version to detect changes to the C API.
 Push a `haybarn-v<version>` tag (or use the
 [Haybarn Node workflow_dispatch](https://github.com/Query-farm-haybarn/haybarn-node-neo/actions/workflows/haybarn-node-neo.yml))
 to build on all platforms and publish all 10 `@haybarn/*` packages to npm.
-On the `haybarn-2.0` branch publishing is switched off until the 2.0 line is
-released; see the comment at the top of that workflow.
-
 ## Attribution
 
 Haybarn is independent of and not endorsed by the DuckDB Foundation. DuckDB is
