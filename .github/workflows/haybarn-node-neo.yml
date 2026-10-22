@@ -1,21 +1,23 @@
 # Haybarn Node (2.0 line): builds the native addon for each supported
-# platform against the Haybarn 2.0 engine and runs the bindings + API tests.
+# platform against the Haybarn 2.0 engine, runs the bindings + API tests, and
+# publishes the @haybarn/* packages to npm.
 #
-# PUBLISHING IS DISABLED ON THIS BRANCH. The 1.5 line (`haybarn` branch)
-# publishes the @haybarn/* packages on `haybarn-v*` tags; here there is no tag
-# trigger and PUBLISH is hard-wired to 'false', so neither a push, a PR, a
-# dispatch nor a tag on a 2.0 commit (GitHub runs the tagged commit's copy of
-# this file) can reach npm. To release 2.0, restore the tag trigger and the
-# PUBLISH/DRY_RUN expressions from the `haybarn` branch in a deliberate commit.
+# Trigger: push of a tag like `haybarn-v2.0.0-rc3` → builds all platforms,
+# then publishes (real, not dry-run). Branch pushes and PRs on haybarn-2.0
+# only build + test. workflow_dispatch honors the `publish` and
+# `publish_dry_run` inputs (default: no publish).
 #
 # The per-platform fetch scripts pull `libhaybarn-<plat>.zip` from the Haybarn
-# engine release named in bindings/scripts/fetch_libhaybarn.py (`base_url`).
+# engine release named in bindings/scripts/fetch_libhaybarn.py (`base_url`),
+# which must exist before this runs.
 name: Haybarn Node
 
 on:
   push:
     branches:
       - 'haybarn-2.0'
+    tags:
+      - 'haybarn-v[0-9]+.[0-9]+.[0-9]+*'
   pull_request:
     branches:
       - 'haybarn-2.0'
@@ -25,16 +27,30 @@ on:
       - 'README.md'
       - 'LICENSE'
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish to npm (otherwise just build + test)'
+        type: boolean
+        required: true
+        default: false
+      publish_dry_run:
+        description: 'When publishing, use --dry-run'
+        type: boolean
+        required: true
+        default: true
 
 concurrency:
   group: haybarn-node-${{ github.ref }}
   cancel-in-progress: false
 
+# Tag-driven runs always publish for real. Dispatch runs honor the inputs.
+# Branch pushes and PRs never publish.
 env:
-  PUBLISH: 'false'
-  DRY_RUN: 'true'
-  # rc/prerelease versions publish under the `rc` dist-tag, finals under
-  # `latest` (unused while PUBLISH is off; kept so re-enabling is one change).
+  PUBLISH: ${{ startsWith(github.ref, 'refs/tags/haybarn-v') || (github.event_name == 'workflow_dispatch' && inputs.publish) }}
+  DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.publish_dry_run }}
+  # rc/prerelease tags (haybarn-v2.0.0-rc3) publish under the `rc` dist-tag so
+  # a bare `npm i @haybarn/node-api` doesn't pull a prerelease; final tags
+  # (haybarn-v2.0.0) publish under `latest`.
   NPM_DIST_TAG: ${{ contains(github.ref_name, '-rc') && 'rc' || 'latest' }}
 
 jobs:

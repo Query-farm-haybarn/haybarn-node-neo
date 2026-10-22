@@ -55,9 +55,6 @@ Tag `haybarn-v<version>` triggers `.github/workflows/haybarn-node-neo.yml`:
 A Haybarn engine release (`haybarn-v<version>` on `Query-farm-haybarn/haybarn`)
 must exist first so the fetch scripts can find `libhaybarn-*.zip`.
 
-On `haybarn-2.0` publishing is disabled (no tag trigger, publish steps off)
-until the 2.0 line is released; re-enable it in the workflow deliberately.
-
 ## Layout
 
 ```
