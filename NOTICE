@@ -1,0 +1,33 @@
+Haybarn — Node bindings
+Copyright (c) 2025 Query Farm LLC
+
+This product is a derived distribution of DuckDB, powered by DuckDB.
+Haybarn is independent of and not endorsed by the DuckDB Foundation.
+DuckDB is a trademark of the DuckDB Foundation
+(https://duckdb.org/trademark_guidelines).
+
+This repository is a hard fork of duckdb/duckdb-node-neo. The upstream MIT
+LICENSE is preserved verbatim. Modifications introduced by Haybarn:
+
+  - npm package scope renamed from @duckdb/* to @haybarn/* across all 10
+    publishable packages (api + dispatcher + 8 per-platform bindings).
+  - Build-time engine fetch redirected from duckdb/duckdb GitHub Releases
+    (duckdb-shared-libs-*.tar.gz) to Query-farm-haybarn/haybarn GitHub
+    Releases (libhaybarn-*.zip; one universal macOS library for both
+    architectures). The native addon is named haybarn.node.
+  - The native-addon link flag is -lhaybarn; the inside-zip library files
+    are libhaybarn.so / libhaybarn.dylib / haybarn.dll / haybarn.lib.
+  - The public C API header (duckdb.h) is preserved verbatim — that is the
+    upstream C surface, and Haybarn is intentionally ABI-compatible with it.
+  - CI replaced by a Haybarn workflow (.github/workflows/haybarn-node-neo.yml)
+    that builds and tests against the Haybarn engine and publishes the
+    @haybarn/* packages; no win32-arm64 package (the engine ships no
+    windows-arm64 library).
+  - Test assertions that encode engine facts (library version, setting
+    count) follow the Haybarn engine.
+
+Source for the underlying DuckDB engine, as modified by Haybarn, is at:
+https://github.com/Query-farm-haybarn/haybarn
+
+The original duckdb-node-neo project lives at:
+https://github.com/duckdb/duckdb-node-neo

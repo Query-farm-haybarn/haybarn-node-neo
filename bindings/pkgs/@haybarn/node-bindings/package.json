@@ -2,6 +2,7 @@
   "name": "@haybarn/node-bindings",
   "version": "2.0.0-r.1",
   "license": "MIT",
+  "homepage": "https://query.farm/products/haybarn/",
   "main": "./haybarn.js",
   "types": "./haybarn.d.ts",
   "dependencies": {
@@ -20,5 +21,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Query-farm-haybarn/haybarn-node-neo.git"
-  }
+  },
+  "description": "Low-level Node bindings to the DuckDB C API, linked against Haybarn (libhaybarn)."
 }

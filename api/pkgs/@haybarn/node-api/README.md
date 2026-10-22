@@ -1,10 +1,31 @@
-# DuckDB Node API
+<p align="center">
+  <a href="https://query.farm/products/haybarn/"><img src="https://raw.githubusercontent.com/Query-farm-haybarn/.github/haybarn/profile/assets/haybarn-icon.png" alt="Haybarn" width="120" height="120"></a>
+</p>
+<p align="center">
+  <a href="https://query.farm"><img src="https://query.farm/media-kit/logo/wordmark-light.png" alt="Query.Farm" height="28"></a>
+</p>
 
-An API for using [DuckDB](https://duckdb.org/) in [Node](https://nodejs.org/).
+# Haybarn Node API
 
-This is a high-level API meant for applications.
-It depends on low-level bindings that adhere closely to [DuckDB's C API](https://duckdb.org/docs/api/c/overview),
-available separately as [@haybarn/node-bindings](https://www.npmjs.com/package/@haybarn/node-bindings).
+A high-level Node API for [Haybarn](https://query.farm/products/haybarn/),
+a derived distribution of [DuckDB](https://duckdb.org/) (powered by DuckDB),
+published by Query Farm LLC.
+
+It depends on low-level bindings that adhere closely to
+[DuckDB's C API](https://duckdb.org/docs/api/c/overview), available separately
+as [@haybarn/node-bindings](https://www.npmjs.com/package/@haybarn/node-bindings).
+
+Forked from [@duckdb/node-api](https://www.npmjs.com/package/@duckdb/node-api);
+the API surface (class names, methods, return shapes) is unchanged, so the only
+migration step is swapping the import:
+
+```ts
+- import { DuckDBInstance } from '@duckdb/node-api';
++ import { DuckDBInstance } from '@haybarn/node-api';
+```
+
+Haybarn is independent of and not endorsed by the DuckDB Foundation. DuckDB is
+a trademark of the DuckDB Foundation.
 
 ## Features
 

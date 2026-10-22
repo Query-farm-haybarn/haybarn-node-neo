@@ -2,6 +2,7 @@
   "name": "@haybarn/node-api",
   "version": "2.0.0-r.1",
   "license": "MIT",
+  "homepage": "https://query.farm/products/haybarn/",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "dependencies": {
@@ -10,5 +11,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Query-farm-haybarn/haybarn-node-neo.git"
-  }
+  },
+  "description": "High-level Node API for Haybarn — a derived distribution of DuckDB, powered by DuckDB."
 }
