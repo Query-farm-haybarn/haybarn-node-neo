@@ -60,11 +60,6 @@
             'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_osx_arm64.py',
           },
         }],
-        ['OS=="win" and target_arch=="arm64"', {
-          'variables': {
-            'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_windows_arm64.py',
-          },
-        }],
         ['OS=="win" and target_arch=="x64"', {
           'variables': {
             'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_windows_amd64.py',
@@ -142,19 +137,6 @@
             },
           ],
         }],
-        ['OS=="win" and target_arch=="arm64"', {
-          'link_settings': {
-            'libraries': [
-              '<(module_root_dir)/libhaybarn/haybarn.lib',
-            ],
-          },
-          'copies': [
-            {
-              'files': ['<(module_root_dir)/libhaybarn/haybarn.dll'],
-              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-arm64',
-            },
-          ],
-        }],
         ['OS=="win" and target_arch=="x64"', {
           'link_settings': {
             'libraries': [
@@ -196,14 +178,6 @@
             {
               'files': ['<(module_root_dir)/build/Release/haybarn.node'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-arm64',
-            },
-          ],
-        }],
-        ['OS=="win" and target_arch=="arm64"', {
-          'copies': [
-            {
-              'files': ['<(module_root_dir)/build/Release/haybarn.node'],
-              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-win32-arm64',
             },
           ],
         }],

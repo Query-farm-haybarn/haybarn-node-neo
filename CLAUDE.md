@@ -37,7 +37,7 @@ easy to rebase onto future upstream commits.
 | branding: fetch libhaybarn release zips | `bindings/scripts/fetch_libhaybarn*.py` (one `base_url` in `fetch_libhaybarn.py`), `bindings/binding.gyp`, `bindings/pkgs/@haybarn/node-bindings/haybarn.{js,d.ts}`, `bindings/.gitignore` |
 | docs | `README.md`, `NOTICE`, `CLAUDE.md`, package READMEs + descriptions |
 | ci: haybarn build/test/publish | `.github/workflows/haybarn-node-neo.yml` (replaces upstream's workflow — see below) |
-| ci: skip win32-arm64 | workflow + dispatcher `optionalDependencies` + lockfile |
+| ci: skip win32-arm64 | workflow + dispatcher `optionalDependencies` + lockfile (the package itself is gone: 2.0 builds no Windows arm64) |
 | test: engine assertions | `bindings/test/config.test.ts`, `bindings/test/constants.test.ts` |
 | chore: version roll | every `package.json` version, `fetch_libhaybarn.py` `base_url` |
 
@@ -51,7 +51,7 @@ Tag `haybarn-v<version>` triggers `.github/workflows/haybarn-node-neo.yml`:
    `libhaybarn-osx-universal.zip` for engine releases up to rc5).
 2. The native `haybarn.node` is built per platform and copied into the
    corresponding `@haybarn/node-bindings-<plat>` package.
-3. All 9 `@haybarn/*` packages are published to npm with `pnpm publish`.
+3. All 8 `@haybarn/*` packages are published to npm with `pnpm publish`.
 
 A Haybarn engine release (`haybarn-v<version>` on `Query-farm-haybarn/haybarn`)
 must exist first so the fetch scripts can find `libhaybarn-*.zip`.
@@ -75,7 +75,6 @@ bindings/
     ├── node-bindings-linux-arm64-musl/
     ├── node-bindings-linux-x64/
     ├── node-bindings-linux-x64-musl/
-    ├── node-bindings-win32-arm64/
     └── node-bindings-win32-x64/
 
 pnpm-workspace.yaml               (workspace globs include @haybarn/* subdirs)

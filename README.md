@@ -23,7 +23,6 @@ trademark attribution.
 - [@haybarn/node-bindings-linux-arm64-musl](bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl/README.md)
 - [@haybarn/node-bindings-linux-x64](bindings/pkgs/@haybarn/node-bindings-linux-x64/README.md)
 - [@haybarn/node-bindings-linux-x64-musl](bindings/pkgs/@haybarn/node-bindings-linux-x64-musl/README.md)
-- [@haybarn/node-bindings-win32-arm64](bindings/pkgs/@haybarn/node-bindings-win32-arm64/README.md)
 - [@haybarn/node-bindings-win32-x64](bindings/pkgs/@haybarn/node-bindings-win32-x64/README.md)
 
 ### Published
@@ -35,7 +34,6 @@ trademark attribution.
 - [@haybarn/node-bindings-linux-arm64-musl](https://www.npmjs.com/package/@haybarn/node-bindings-linux-arm64-musl)
 - [@haybarn/node-bindings-linux-x64](https://www.npmjs.com/package/@haybarn/node-bindings-linux-x64)
 - [@haybarn/node-bindings-linux-x64-musl](https://www.npmjs.com/package/@haybarn/node-bindings-linux-x64-musl)
-- [@haybarn/node-bindings-win32-arm64](https://www.npmjs.com/package/@haybarn/node-bindings-win32-arm64)
 - [@haybarn/node-bindings-win32-x64](https://www.npmjs.com/package/@haybarn/node-bindings-win32-x64)
 
 ## Use
@@ -91,7 +89,6 @@ Bump version in:
 - `bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl/package.json`
 - `bindings/pkgs/@haybarn/node-bindings-linux-x64/package.json`
 - `bindings/pkgs/@haybarn/node-bindings-linux-x64-musl/package.json`
-- `bindings/pkgs/@haybarn/node-bindings-win32-arm64/package.json`
 - `bindings/pkgs/@haybarn/node-bindings-win32-x64/package.json`
 
 ### Upgrade Haybarn / DuckDB Version
@@ -119,7 +116,7 @@ rolling forward the Haybarn version to detect changes to the C API.
 
 Push a `haybarn-v<version>` tag (or use the
 [Haybarn Node workflow_dispatch](https://github.com/Query-farm-haybarn/haybarn-node-neo/actions/workflows/haybarn-node-neo.yml))
-to build on all platforms and publish all 9 `@haybarn/*` packages to npm.
+to build on all platforms and publish all 8 `@haybarn/*` packages to npm.
 ## Attribution
 
 Haybarn is independent of and not endorsed by the DuckDB Foundation. DuckDB is

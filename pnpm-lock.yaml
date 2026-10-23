@@ -97,8 +97,6 @@ importers:
 
   bindings/pkgs/@haybarn/node-bindings-linux-x64-musl: {}
 
-  bindings/pkgs/@haybarn/node-bindings-win32-arm64: {}
-
   bindings/pkgs/@haybarn/node-bindings-win32-x64: {}
 
 packages:
