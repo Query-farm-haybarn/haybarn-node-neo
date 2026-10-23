@@ -19,7 +19,6 @@ trademark attribution.
 - [@haybarn/node-api](api/pkgs/@haybarn/node-api/README.md)
 - [@haybarn/node-bindings](bindings/pkgs/@haybarn/node-bindings/README.md)
 - [@haybarn/node-bindings-darwin-arm64](bindings/pkgs/@haybarn/node-bindings-darwin-arm64/README.md)
-- [@haybarn/node-bindings-darwin-x64](bindings/pkgs/@haybarn/node-bindings-darwin-x64/README.md)
 - [@haybarn/node-bindings-linux-arm64](bindings/pkgs/@haybarn/node-bindings-linux-arm64/README.md)
 - [@haybarn/node-bindings-linux-arm64-musl](bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl/README.md)
 - [@haybarn/node-bindings-linux-x64](bindings/pkgs/@haybarn/node-bindings-linux-x64/README.md)
@@ -32,7 +31,6 @@ trademark attribution.
 - [@haybarn/node-api](https://www.npmjs.com/package/@haybarn/node-api)
 - [@haybarn/node-bindings](https://www.npmjs.com/package/@haybarn/node-bindings)
 - [@haybarn/node-bindings-darwin-arm64](https://www.npmjs.com/package/@haybarn/node-bindings-darwin-arm64)
-- [@haybarn/node-bindings-darwin-x64](https://www.npmjs.com/package/@haybarn/node-bindings-darwin-x64)
 - [@haybarn/node-bindings-linux-arm64](https://www.npmjs.com/package/@haybarn/node-bindings-linux-arm64)
 - [@haybarn/node-bindings-linux-arm64-musl](https://www.npmjs.com/package/@haybarn/node-bindings-linux-arm64-musl)
 - [@haybarn/node-bindings-linux-x64](https://www.npmjs.com/package/@haybarn/node-bindings-linux-x64)
@@ -89,7 +87,6 @@ Bump version in:
 - `api/pkgs/@haybarn/node-api/package.json`
 - `bindings/pkgs/@haybarn/node-bindings/package.json`
 - `bindings/pkgs/@haybarn/node-bindings-darwin-arm64/package.json`
-- `bindings/pkgs/@haybarn/node-bindings-darwin-x64/package.json`
 - `bindings/pkgs/@haybarn/node-bindings-linux-arm64/package.json`
 - `bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl/package.json`
 - `bindings/pkgs/@haybarn/node-bindings-linux-x64/package.json`
@@ -122,7 +119,7 @@ rolling forward the Haybarn version to detect changes to the C API.
 
 Push a `haybarn-v<version>` tag (or use the
 [Haybarn Node workflow_dispatch](https://github.com/Query-farm-haybarn/haybarn-node-neo/actions/workflows/haybarn-node-neo.yml))
-to build on all platforms and publish all 10 `@haybarn/*` packages to npm.
+to build on all platforms and publish all 9 `@haybarn/*` packages to npm.
 ## Attribution
 
 Haybarn is independent of and not endorsed by the DuckDB Foundation. DuckDB is

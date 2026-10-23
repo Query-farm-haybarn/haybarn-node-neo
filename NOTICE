@@ -9,12 +9,14 @@ DuckDB is a trademark of the DuckDB Foundation
 This repository is a hard fork of duckdb/duckdb-node-neo. The upstream MIT
 LICENSE is preserved verbatim. Modifications introduced by Haybarn:
 
-  - npm package scope renamed from @duckdb/* to @haybarn/* across all 10
-    publishable packages (api + dispatcher + 8 per-platform bindings).
+  - npm package scope renamed from @duckdb/* to @haybarn/* across all 9
+    publishable packages (api + dispatcher + 7 per-platform bindings).
+  - macOS x86_64 (@haybarn/node-bindings-darwin-x64) is not built or
+    published in the 2.0 line; macOS is arm64 only.
   - Build-time engine fetch redirected from duckdb/duckdb GitHub Releases
     (duckdb-shared-libs-*.tar.gz) to Query-farm-haybarn/haybarn GitHub
-    Releases (libhaybarn-*.zip; one universal macOS library for both
-    architectures). The native addon is named haybarn.node.
+    Releases (libhaybarn-*.zip; macOS uses libhaybarn-osx-arm64.zip, or the
+    universal library for engine releases up to rc5). The native addon is named haybarn.node.
   - The native-addon link flag is -lhaybarn; the inside-zip library files
     are libhaybarn.so / libhaybarn.dylib / haybarn.dll / haybarn.lib.
   - The public C API header (duckdb.h) is preserved verbatim — that is the

@@ -25,6 +25,5 @@ is a trademark of the DuckDB Foundation.
 - Linux x64 glibc
 - Linux x64 musl
 - Mac OS X (Darwin) arm64 (Apple Silicon)
-- Mac OS X (Darwin) x64 (Intel)
 - Windows (Win32) arm64
 - Windows (Win32) x64

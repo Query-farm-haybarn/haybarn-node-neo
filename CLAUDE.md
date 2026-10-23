@@ -47,10 +47,11 @@ Tag `haybarn-v<version>` triggers `.github/workflows/haybarn-node-neo.yml`:
 
 1. Each platform builds against the matching `libhaybarn-<plat>.zip` from the
    `Query-farm-haybarn/haybarn` release named in `fetch_libhaybarn.py`'s
-   `base_url` (macOS uses `libhaybarn-osx-universal.zip` for both arches).
+   `base_url` (macOS is arm64 only: `libhaybarn-osx-arm64.zip`, falling back to
+   `libhaybarn-osx-universal.zip` for engine releases up to rc5).
 2. The native `haybarn.node` is built per platform and copied into the
    corresponding `@haybarn/node-bindings-<plat>` package.
-3. All 10 `@haybarn/*` packages are published to npm with `pnpm publish`.
+3. All 9 `@haybarn/*` packages are published to npm with `pnpm publish`.
 
 A Haybarn engine release (`haybarn-v<version>` on `Query-farm-haybarn/haybarn`)
 must exist first so the fetch scripts can find `libhaybarn-*.zip`.
@@ -70,7 +71,6 @@ bindings/
 └── pkgs/@haybarn/
     ├── node-bindings/                            (dispatcher, picks per-platform addon)
     ├── node-bindings-darwin-arm64/
-    ├── node-bindings-darwin-x64/
     ├── node-bindings-linux-arm64/
     ├── node-bindings-linux-arm64-musl/
     ├── node-bindings-linux-x64/

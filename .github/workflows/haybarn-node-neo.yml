@@ -284,52 +284,6 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
 
-  macos_x64:
-    name: Mac OS X x64
-    # macos-15-intel: GitHub's pinned Intel runner image (Sequoia, Apple Intel
-    # x86_64). macos-13/14 retire over 2025; -intel name is the durable one.
-    runs-on: macos-15-intel
-    permissions:
-      contents: read
-      id-token: write
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          registry-url: 'https://registry.npmjs.org'
-      - run: echo "NODE_DIR=$(dirname $(dirname $(which node)))" >> "$GITHUB_ENV"
-      - uses: pnpm/action-setup@v6
-      - run: pnpm install --ignore-scripts
-      - name: Bindings — build & test
-        working-directory: bindings
-        run: pnpm run build && pnpm test
-      - name: API — build & test
-        working-directory: api
-        run: pnpm run build && pnpm test
-      # Upstream 2.0: rebuild the addon with DUCKDB_NODE_INSTRUMENT_NAPI_REFS
-      # (aborts if a Napi::ObjectReference is destroyed off the JS thread) and
-      # re-run the suites. Leaves an instrumented addon in bindings/pkgs, so it
-      # must never run before a publish step.
-      - name: Bindings — instrumented build & test (N-API references)
-        if: env.PUBLISH != 'true'
-        working-directory: bindings
-        run: |
-          pnpm exec node-gyp configure --nodedir="$NODE_DIR" -- -Dduckdb_node_instrument_napi_refs=1
-          pnpm exec node-gyp build --nodedir="$NODE_DIR"
-          pnpm test
-          pnpm run test:stress
-      - name: API — test (N-API reference instrumentation)
-        if: env.PUBLISH != 'true'
-        working-directory: api
-        run: pnpm test
-      - name: Publish — @haybarn/node-bindings-darwin-x64
-        if: env.PUBLISH == 'true'
-        working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-x64
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
-
   windows_x64:
     name: Windows x64
     runs-on: windows-2025
