@@ -10,7 +10,6 @@
   },
   "optionalDependencies": {
     "@haybarn/node-bindings-darwin-arm64": "workspace:*",
-    "@haybarn/node-bindings-darwin-x64": "workspace:*",
     "@haybarn/node-bindings-linux-arm64": "workspace:*",
     "@haybarn/node-bindings-linux-arm64-musl": "workspace:*",
     "@haybarn/node-bindings-linux-x64": "workspace:*",

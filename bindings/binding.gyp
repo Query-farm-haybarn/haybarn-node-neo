@@ -60,11 +60,6 @@
             'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_osx_arm64.py',
           },
         }],
-        ['OS=="mac" and target_arch=="x64"', {
-          'variables': {
-            'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_osx_amd64.py',
-          },
-        }],
         ['OS=="win" and target_arch=="arm64"', {
           'variables': {
             'script_path': '<(module_root_dir)/scripts/fetch_libhaybarn_windows_arm64.py',
@@ -147,25 +142,6 @@
             },
           ],
         }],
-        ['OS=="mac" and target_arch=="x64"', {
-          'cflags+': ['-fvisibility=hidden'],
-          'xcode_settings': {
-            'GCC_SYMBOLS_PRIVATE_EXTERN': 'YES', # -fvisibility=hidden
-          },
-          'link_settings': {
-            'libraries': [
-              '-lhaybarn',
-              '-L<(module_root_dir)/libhaybarn',
-              '-Wl,-rpath,@loader_path',
-            ],
-          },
-          'copies': [
-            {
-              'files': ['<(module_root_dir)/libhaybarn/libhaybarn.dylib'],
-              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-x64',
-            },
-          ],
-        }],
         ['OS=="win" and target_arch=="arm64"', {
           'link_settings': {
             'libraries': [
@@ -220,14 +196,6 @@
             {
               'files': ['<(module_root_dir)/build/Release/haybarn.node'],
               'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-arm64',
-            },
-          ],
-        }],
-        ['OS=="mac" and target_arch=="x64"', {
-          'copies': [
-            {
-              'files': ['<(module_root_dir)/build/Release/haybarn.node'],
-              'destination': '<(module_root_dir)/pkgs/@haybarn/node-bindings-darwin-x64',
             },
           ],
         }],

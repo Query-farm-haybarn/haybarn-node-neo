@@ -71,9 +71,6 @@ importers:
       '@haybarn/node-bindings-darwin-arm64':
         specifier: workspace:*
         version: link:../node-bindings-darwin-arm64
-      '@haybarn/node-bindings-darwin-x64':
-        specifier: workspace:*
-        version: link:../node-bindings-darwin-x64
       '@haybarn/node-bindings-linux-arm64':
         specifier: workspace:*
         version: link:../node-bindings-linux-arm64
@@ -91,8 +88,6 @@ importers:
         version: link:../node-bindings-win32-x64
 
   bindings/pkgs/@haybarn/node-bindings-darwin-arm64: {}
-
-  bindings/pkgs/@haybarn/node-bindings-darwin-x64: {}
 
   bindings/pkgs/@haybarn/node-bindings-linux-arm64: {}
 

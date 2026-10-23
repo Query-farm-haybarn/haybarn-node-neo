@@ -28,8 +28,6 @@ const getNativeNodeBinding = (runtimePlatformArch) => {
                 : require('@haybarn/node-bindings-linux-arm64/haybarn.node');
         case 'darwin-arm64':
             return require('@haybarn/node-bindings-darwin-arm64/haybarn.node');
-        case 'darwin-x64':
-            return require('@haybarn/node-bindings-darwin-x64/haybarn.node');
         case 'win32-arm64':
             return require('@haybarn/node-bindings-win32-arm64/haybarn.node');
         case 'win32-x64':
