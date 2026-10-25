@@ -5,7 +5,7 @@ import zipfile
 
 # Where the libhaybarn-<suffix>.zip archives are fetched from: the Haybarn
 # engine release on Query-farm-haybarn/haybarn (never DuckDB's own binaries).
-base_url = "https://github.com/Query-farm-haybarn/haybarn/releases/download/haybarn-v2.0.0-rc6"
+base_url = "https://github.com/Query-farm-haybarn/haybarn/releases/download/haybarn-v2.0.0-rc7"
 
 def fetch_libhaybarn(suffix, files, fallback_suffix=None):
   output_dir = os.path.join(os.path.dirname(__file__), "..", "libhaybarn")
