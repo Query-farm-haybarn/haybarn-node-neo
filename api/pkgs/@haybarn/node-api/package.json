@@ -1,6 +1,6 @@
 {
   "name": "@haybarn/node-api",
-  "version": "2.0.0-rc8",
+  "version": "2.0.0-rc9",
   "license": "MIT",
   "homepage": "https://query.farm/products/haybarn/",
   "main": "./lib/index.js",
