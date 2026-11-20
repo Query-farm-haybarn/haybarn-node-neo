@@ -23,6 +23,15 @@ if [ "$(printf '%s\n' 11.5.1 "$npm_version" | sort -V | head -n1)" != 11.5.1 ]; 
   exit 1
 fi
 
+# Skip a version that is already on the registry, so a tag run that is
+# repeated after a partial publish only publishes what is missing.
+name="$(node -p "require('./$dir/package.json').name")"
+version="$(node -p "require('./$dir/package.json').version")"
+if [ -n "$(npm view "$name@$version" version 2>/dev/null || true)" ]; then
+  echo ">>> $name@$version is already on npm; skipping"
+  exit 0
+fi
+
 out="$(mktemp -d)"
 (cd "$dir" && pnpm pack --pack-destination "$out")
 tarball="$(ls "$out"/*.tgz)"
@@ -31,4 +40,6 @@ dry_run=()
 [ "${DRY_RUN:-false}" = "true" ] && dry_run=(--dry-run)
 
 echo ">>> npm publish $(basename "$tarball") (dist-tag: $NPM_DIST_TAG${dry_run:+, dry run})"
-npm publish "$tarball" "${dry_run[@]}" --provenance --access public --tag "$NPM_DIST_TAG" --ignore-scripts
+# ${a[@]+"${a[@]}"}: an empty array under `set -u` is an error in bash 3.2
+# (macOS runners), which "${dry_run[@]}" alone would trip.
+npm publish "$tarball" ${dry_run[@]+"${dry_run[@]}"} --provenance --access public --tag "$NPM_DIST_TAG" --ignore-scripts
