@@ -51,7 +51,10 @@ Tag `haybarn-v<version>` triggers `.github/workflows/haybarn-node-neo.yml`:
    `libhaybarn-osx-universal.zip` for engine releases up to rc5).
 2. The native `haybarn.node` is built per platform and copied into the
    corresponding `@haybarn/node-bindings-<plat>` package.
-3. All 8 `@haybarn/*` packages are published to npm with `pnpm publish`.
+3. All 8 `@haybarn/*` packages are published to npm by `.github/scripts/npm-publish.sh`
+   (`pnpm pack`, then `npm publish` with trusted publishing — GitHub OIDC, no token).
+   Each package needs a trusted publisher on npmjs.com naming this repo and
+   `haybarn-node-neo.yml`.
 
 A Haybarn engine release (`haybarn-v<version>` on `Query-farm-haybarn/haybarn`)
 must exist first so the fetch scripts can find `libhaybarn-*.zip`.

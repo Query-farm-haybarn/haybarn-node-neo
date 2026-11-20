@@ -2,6 +2,11 @@
 # platform against the Haybarn 2.0 engine, runs the bindings + API tests, and
 # publishes the @haybarn/* packages to npm.
 #
+# npm auth is trusted publishing: each job's GitHub OIDC identity
+# (id-token: write) is the credential, no token. Every @haybarn/* package's
+# trusted publisher on npmjs.com names this repository and this workflow file
+# (haybarn-node-neo.yml). Publishing goes through .github/scripts/npm-publish.sh.
+#
 # Trigger: push of a tag like `haybarn-v2.0.0-rc3` → builds all platforms,
 # then publishes (real, not dry-run). Branch pushes and PRs on haybarn-2.0
 # only build + test. workflow_dispatch honors the `publish` and
@@ -64,7 +69,7 @@ jobs:
       image: quay.io/pypa/manylinux_2_28_x86_64:2026.05.13-1
     permissions:
       contents: read
-      id-token: write   # reserved for npm OIDC trusted publishing
+      id-token: write   # npm trusted publishing (OIDC): the publish credential
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -99,22 +104,16 @@ jobs:
 
       - name: Publish — @haybarn/node-bindings-linux-x64
         if: env.PUBLISH == 'true'
-        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
+        shell: bash
+        run: .github/scripts/npm-publish.sh bindings/pkgs/@haybarn/node-bindings-linux-x64
       - name: Publish — @haybarn/node-bindings (dispatcher)
         if: env.PUBLISH == 'true'
-        working-directory: bindings/pkgs/@haybarn/node-bindings
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
+        shell: bash
+        run: .github/scripts/npm-publish.sh bindings/pkgs/@haybarn/node-bindings
       - name: Publish — @haybarn/node-api
         if: env.PUBLISH == 'true'
-        working-directory: api/pkgs/@haybarn/node-api
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
+        shell: bash
+        run: .github/scripts/npm-publish.sh api/pkgs/@haybarn/node-api
 
   linux_x64_musl:
     name: Linux x64 musl
@@ -155,10 +154,8 @@ jobs:
             '
       - name: Publish — @haybarn/node-bindings-linux-x64-musl
         if: env.PUBLISH == 'true'
-        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-x64-musl
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
+        shell: bash
+        run: .github/scripts/npm-publish.sh bindings/pkgs/@haybarn/node-bindings-linux-x64-musl
 
   linux_arm64:
     name: Linux arm64 glibc
@@ -194,10 +191,8 @@ jobs:
           pnpm run test:stress
       - name: Publish — @haybarn/node-bindings-linux-arm64
         if: env.PUBLISH == 'true'
-        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
+        shell: bash
+        run: .github/scripts/npm-publish.sh bindings/pkgs/@haybarn/node-bindings-linux-arm64
 
   linux_arm64_musl:
     name: Linux arm64 musl
@@ -235,10 +230,8 @@ jobs:
             '
       - name: Publish — @haybarn/node-bindings-linux-arm64-musl
         if: env.PUBLISH == 'true'
-        working-directory: bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
+        shell: bash
+        run: .github/scripts/npm-publish.sh bindings/pkgs/@haybarn/node-bindings-linux-arm64-musl
 
   macos_arm64:
     name: Mac OS X arm64
@@ -279,10 +272,8 @@ jobs:
         run: pnpm test
       - name: Publish — @haybarn/node-bindings-darwin-arm64
         if: env.PUBLISH == 'true'
-        working-directory: bindings/pkgs/@haybarn/node-bindings-darwin-arm64
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
+        shell: bash
+        run: .github/scripts/npm-publish.sh bindings/pkgs/@haybarn/node-bindings-darwin-arm64
 
   windows_x64:
     name: Windows x64
@@ -348,11 +339,8 @@ jobs:
         run: pnpm test
       - name: Publish — @haybarn/node-bindings-win32-x64
         if: env.PUBLISH == 'true'
-        working-directory: bindings/pkgs/@haybarn/node-bindings-win32-x64
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.HAYBARN_NPM_TOKEN }}
         shell: bash
-        run: pnpm publish $( [ "$DRY_RUN" = "true" ] && echo --dry-run ) --access public --tag "$NPM_DIST_TAG" --no-git-checks
+        run: .github/scripts/npm-publish.sh bindings/pkgs/@haybarn/node-bindings-win32-x64
 
   # No Windows arm64: Haybarn 2.0 does not build it (no libhaybarn-windows-arm64
   # and no @haybarn/node-bindings-win32-arm64 package).
